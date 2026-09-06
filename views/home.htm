@@ -1,0 +1,289 @@
+<div class="home-layout">
+
+<aside class="home-aside">
+    <div class="sidebar-card">
+        <div class="sidebar-header">
+            📞 دانش‌آموزان دارای احضار والدین / مشاوره
+            <span class="sidebar-badge">{{ count(@followUpStudents) }}</span>
+        </div>
+        <div class="sidebar-body">
+            <check if="{{ count(@followUpStudents) }}">
+                <ul class="followup-list">
+                    <repeat group="@followUpStudents" value="@stu">
+                    <li class="followup-item">
+                        <div class="followup-info">
+                            <a href="/students/{{ @stu.student_id_pk }}/edit" class="followup-name">{{ @stu.student_name }}</a>
+                            <span class="followup-meta">{{ @stu.student_id }} — {{ @stu.class_name }}</span>
+                        </div>
+                        <div class="followup-tags">
+                            <check if="{{ @stu.action_types == 'parent_meeting' }}">
+                                <span class="tag tag-danger">احضار والدین</span>
+                            <false>
+                                <check if="{{ @stu.action_types == 'mentor_referral' }}">
+                                    <span class="tag tag-warning">معرفی به مشاور</span>
+                                <false>
+                                    <span class="tag tag-danger">احضار والدین</span>
+                                    <span class="tag tag-warning">مشاوره</span>
+                                </check>
+                            </check>
+                        </div>
+                    </li>
+                    </repeat>
+                </ul>
+            <false>
+                <p class="empty-state sidebar-empty">دانش‌آموزی با اقدام پیگیری باز ندارد.</p>
+            </check>
+        </div>
+        <div class="sidebar-footer">
+            <a href="/actions" class="btn btn-sm btn-outline-secondary">مشاهده همه اقدامات ←</a>
+        </div>
+    </div>
+</aside>
+
+<div class="home-main">
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon icon-class">🎓</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@classes) }}</div>
+            <div class="stat-label">کلاس</div>
+        </div>
+    </div>
+    <div class="stat-card positive">
+        <div class="stat-icon icon-positive">⭐</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@positiveScoreStudents) }}</div>
+            <div class="stat-label">دانش‌آموز با امتیاز مثبت</div>
+        </div>
+    </div>
+    <div class="stat-card negative">
+        <div class="stat-icon icon-negative">⚠️</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@negativeScoreStudents) }}</div>
+            <div class="stat-label">دانش‌آموز با امتیاز منفی</div>
+        </div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-icon icon-open">📋</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@openRecords) }}</div>
+            <div class="stat-label">رکورد باز</div>
+        </div>
+    </div>
+    <div class="stat-card absence">
+        <div class="stat-icon icon-absence">🕐</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@topAbsentees) }}</div>
+            <div class="stat-label">دانش‌آموز غیبت‌کننده</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">رکوردهای باز ({{ count(@openRecords) }})</div>
+    <div class="card-body">
+        <check if="{{ count(@openRecords) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نوع اقدام</th>
+                        <th>عنوان</th>
+                        <th>دانش‌آموز</th>
+                        <th>امتیاز رویداد</th>
+                        <th>تاریخ ثبت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@openRecords" value="@record">
+                    <tr>
+                        <td>{{ @record.id }}</td>
+                        <td>
+                            <check if="{{ @record.action_type == 'parent_meeting' }}">
+                                <span class="status-open">احضار والدین</span>
+                            <false>
+                                <check if="{{ @record.action_type == 'mentor_referral' }}">
+                                    <span class="status-open">معرفی به مشاور</span>
+                                </check>
+                            </check>
+                        </td>
+                        <td>{{ @record.title }}</td>
+                        <td>{{ @record.student_name }}</td>
+                        <td>
+                            <check if="{{ @record.is_positive }}">
+                                <span class="score-positive">{{ @record.score }}</span>
+                            <false>
+                                <span class="score-negative">{{ @record.score }}</span>
+                            </check>
+                        </td>
+                        <td>{{ \App\Helpers\JalaliDate::format(@record.created_at) }}</td>
+                        <td>
+                            <form method="POST" action="/actions/{{ @record.id }}/complete" class="action-form">
+                                <input type="text" name="result" placeholder="نتیجه نهایی" style="width:150px;">
+                                <button type="submit" class="btn btn-success btn-sm">ثبت نتیجه</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+        <false>
+            <p class="empty-state">رکورد بازی وجود ندارد.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">فهرست کلاس‌ها</div>
+    <div class="card-body">
+        <check if="{{ count(@classes) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نام کلاس</th>
+                        <th>پایه</th>
+                        <th>بخش</th>
+                        <th>تعداد دانش‌آموزان</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@classes" value="@cls">
+                    <tr>
+                        <td>{{ @cls.id }}</td>
+                        <td>{{ @cls.name }}</td>
+                        <td>{{ @cls.grade }}</td>
+                        <td>{{ @cls.section }}</td>
+                        <td>{{ @cls.student_count }}</td>
+                        <td>
+                            <a href="/classes" class="btn btn-sm btn-outline-secondary">مدیریت</a>
+                        </td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+        <false>
+            <p class="empty-state">کلاسی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card card-positive">
+    <div class="card-header">دانش‌آموزان با امتیاز مثبت (برتری)</div>
+    <div class="card-body">
+        <check if="{{ count(@positiveScoreStudents) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>شماره دانش‌آموزی</th>
+                        <th>نام دانش‌آموز</th>
+                        <th>کلاس</th>
+                        <th>کل امتیاز</th>
+                        <th>تعداد رویدادها</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@positiveScoreStudents" value="@student">
+                    <tr class="{{ @student.total_score >= 50 ? 'row-excellent' : 'row-good' }}">
+                        <td>{{ @student.id }}</td>
+                        <td>{{ @student.student_id }}</td>
+                        <td>{{ @student.name }}</td>
+                        <td>{{ @student.class_name }}</td>
+                        <td><span class="score-positive">{{ @student.total_score }}</span></td>
+                        <td>{{ @student.event_count }}</td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+            <div class="severity-legend">
+                <span><span class="dot dot-excellent"></span>امتیاز ۵۰ و بالاتر (برتری مثبت)</span>
+                <span><span class="dot dot-good"></span>امتیاز مثبت (خوب)</span>
+            </div>
+        <false>
+            <p class="empty-state">دانش‌آموزی با امتیاز مثبت یافت نشد.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card card-negative">
+    <div class="card-header">دانش‌آموزان با امتیاز منفی (نیاز به توجه)</div>
+    <div class="card-body">
+        <check if="{{ count(@negativeScoreStudents) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>شماره دانش‌آموزی</th>
+                        <th>نام دانش‌آموز</th>
+                        <th>کلاس</th>
+                        <th>کل امتیاز</th>
+                        <th>تعداد رویدادها</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@negativeScoreStudents" value="@student">
+                    <tr class="{{ @student.total_score <= -50 ? 'row-critical' : (@student.total_score <= -25 ? 'row-alert' : 'row-watch') }}">
+                        <td>{{ @student.id }}</td>
+                        <td>{{ @student.student_id }}</td>
+                        <td>{{ @student.name }}</td>
+                        <td>{{ @student.class_name }}</td>
+                        <td><span class="score-negative">{{ @student.total_score }}</span></td>
+                        <td>{{ @student.event_count }}</td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+            <div class="severity-legend">
+                <span><span class="dot dot-critical"></span>وضعیت بحرانی (۵۰- و کمتر)</span>
+                <span><span class="dot dot-alert"></span>هشدار (۲۵- تا ۴۹-)</span>
+                <span><span class="dot dot-watch"></span>تحت نظر (۲۴- تا ۱-)</span>
+            </div>
+        <false>
+            <p class="empty-state">دانش‌آموزی با امتیاز منفی یافت نشد.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card card-absence">
+    <div class="card-header">۲۰ دانش‌آموز با بیشترین غیبت</div>
+    <div class="card-body">
+        <check if="{{ count(@topAbsentees) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>شماره دانش‌آموزی</th>
+                        <th>نام دانش‌آموز</th>
+                        <th>کلاس</th>
+                        <th>تعداد غیبت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@topAbsentees" value="@student">
+                    <tr class="{{ @student.absence_count >= 5 ? 'row-critical' : (@student.absence_count >= 3 ? 'row-alert' : 'row-watch') }}">
+                        <td>{{ @student.id }}</td>
+                        <td>{{ @student.student_id }}</td>
+                        <td>{{ @student.name }}</td>
+                        <td>{{ @student.class_name }}</td>
+                        <td><span class="score-negative">{{ @student.absence_count }}</span></td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+            <div class="severity-legend">
+                <span><span class="dot dot-critical"></span>غیبت بحرانی (۵ مورد و بیشتر)</span>
+                <span><span class="dot dot-alert"></span>هشدار (۳ تا ۴ مورد)</span>
+                <span><span class="dot dot-watch"></span>تحت نظر (۱ تا ۲ مورد)</span>
+            </div>
+        <false>
+            <p class="empty-state">هیچ غیبتی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>
+
+</div>
+</div>

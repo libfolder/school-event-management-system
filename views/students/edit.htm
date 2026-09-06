@@ -1,0 +1,140 @@
+<check if="{{ @errors }}">
+    <div class="alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-body">
+            <div class="alert-title">خطا در ثبت اطلاعات</div>
+            <ul class="alert-list">
+                <repeat group="@errors" key="@field" value="@message">
+                    <li>{{ @message }}</li>
+                </repeat>
+            </ul>
+        </div>
+        <button type="button" class="alert-close" onclick="this.closest('.alert').remove()">×</button>
+    </div>
+</check>
+
+<div class="dialog">
+    <div class="dialog-titlebar">
+        <span class="dialog-title">
+            <check if="{{ @action == 'edit' }}">
+                🎓 ویرایش دانش‌آموز
+            <false>
+                🎓 اضافه کردن دانش‌آموز جدید
+            </check>
+        </span>
+        <a href="/students" class="dialog-close" title="بستن">×</a>
+    </div>
+    <form method="POST" action="{{ @form_action }}" class="dialog-body" novalidate>
+        <div class="form-row">
+            <div class="form-group {{ @errors.student_id ?? '' ? 'has-error' : '' }}">
+                <label>شماره دانش‌آموزی:</label>
+                <input type="text" name="student_id" value="{{ @old.student_id ?? (@student.student_id ?? '') }}" required>
+                <check if="{{ @errors.student_id ?? '' }}">
+                    <span class="field-error">{{ @errors.student_id }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.melli_code ?? '' ? 'has-error' : '' }}">
+                <label>کد ملی:</label>
+                <input type="text" name="melli_code" value="{{ @old.melli_code ?? (@student.melli_code ?? '') }}" placeholder="۱۰ رقم (اختیاری)">
+                <check if="{{ @errors.melli_code ?? '' }}">
+                    <span class="field-error">{{ @errors.melli_code }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.first_name ?? '' ? 'has-error' : '' }}">
+                <label>نام:</label>
+                <input type="text" name="first_name" value="{{ @old.first_name ?? (@student.first_name ?? '') }}" required>
+                <check if="{{ @errors.first_name ?? '' }}">
+                    <span class="field-error">{{ @errors.first_name }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.last_name ?? '' ? 'has-error' : '' }}">
+                <label>نام خانوادگی:</label>
+                <input type="text" name="last_name" value="{{ @old.last_name ?? (@student.last_name ?? '') }}" required>
+                <check if="{{ @errors.last_name ?? '' }}">
+                    <span class="field-error">{{ @errors.last_name }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.father_name ?? '' ? 'has-error' : '' }}">
+                <label>نام پدر:</label>
+                <input type="text" name="father_name" value="{{ @old.father_name ?? (@student.father_name ?? '') }}">
+                <check if="{{ @errors.father_name ?? '' }}">
+                    <span class="field-error">{{ @errors.father_name }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.mother_name ?? '' ? 'has-error' : '' }}">
+                <label>نام مادر:</label>
+                <input type="text" name="mother_name" value="{{ @old.mother_name ?? (@student.mother_name ?? '') }}">
+                <check if="{{ @errors.mother_name ?? '' }}">
+                    <span class="field-error">{{ @errors.mother_name }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.class_id ?? '' ? 'has-error' : '' }}">
+                <label>کلاس:</label>
+                <select name="class_id" required>
+                    <option value="">انتخاب کنید</option>
+                    <repeat group="@classes" value="@cls">
+                        <option value="{{ @cls.id }}"
+                            <check if="{{ (@old.class_id ?? (@student.class_id ?? 0)) == @cls.id }}">
+                                selected
+                            </check>
+                        >{{ @cls.name }} - پایه {{ @cls.grade }} {{ @cls.section }}</option>
+                    </repeat>
+                </select>
+                <check if="{{ @errors.class_id ?? '' }}">
+                    <span class="field-error">{{ @errors.class_id }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.grade ?? '' ? 'has-error' : '' }}">
+                <label>پایه تحصیلی:</label>
+                <input type="text" name="grade" value="{{ @old.grade ?? (@student.grade ?? '') }}" placeholder="مثلاً هفتم">
+                <check if="{{ @errors.grade ?? '' }}">
+                    <span class="field-error">{{ @errors.grade }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.father_phone ?? '' ? 'has-error' : '' }}">
+                <label>تلفن پدر:</label>
+                <input type="text" name="father_phone" value="{{ @old.father_phone ?? (@student.father_phone ?? '') }}" placeholder="۰۹xxxxxxxxx">
+                <check if="{{ @errors.father_phone ?? '' }}">
+                    <span class="field-error">{{ @errors.father_phone }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.mother_phone ?? '' ? 'has-error' : '' }}">
+                <label>تلفن مادر:</label>
+                <input type="text" name="mother_phone" value="{{ @old.mother_phone ?? (@student.mother_phone ?? '') }}" placeholder="۰۹xxxxxxxxx">
+                <check if="{{ @errors.mother_phone ?? '' }}">
+                    <span class="field-error">{{ @errors.mother_phone }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.photo ?? '' ? 'has-error' : '' }}">
+                <label>عکس (مسیر فایل):</label>
+                <input type="text" name="photo" value="{{ @old.photo ?? (@student.photo ?? '') }}" placeholder="مثلاً /assets/photos/s1001.jpg">
+                <check if="{{ @errors.photo ?? '' }}">
+                    <span class="field-error">{{ @errors.photo }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.address ?? '' ? 'has-error' : '' }}">
+                <label>آدرس:</label>
+                <input type="text" name="address" value="{{ @old.address ?? (@student.address ?? '') }}" placeholder="نشانی محل سکونت">
+                <check if="{{ @errors.address ?? '' }}">
+                    <span class="field-error">{{ @errors.address }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button type="submit" class="btn btn-success">
+                <check if="{{ @action == 'edit' }}">به‌روزرسانی<false>ثبت</false></check>
+            </button>
+            <a href="/students" class="btn btn-outline-secondary">لغو</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-header">
+        فهرست رویدادها
+        <a href="/events/create" class="btn btn-success btn-sm">＋ ثبت رویداد جدید</a>
+    </div>
+    <div class="card-body">
+        <check if="{{ count(@events) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>تاریخ</th>
+                        <th>دانش‌آموز</th>
+                        <th>نوع رویداد</th>
+                        <th>امتیاز</th>
+                        <th>معلم</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@events" value="@event">
+                    <tr>
+                        <td>{{ @event.id }}</td>
+                        <td>{{ \App\Helpers\JalaliDate::format(@event.event_date) }}</td>
+                        <td>{{ @event.student_name }}</td>
+                        <td>{{ @event.event_type_name }}</td>
+                        <td>
+                            <check if="{{ @event.score > 0 }}">
+                                <span class="score-positive">{{ @event.score }}</span>
+                            <false>
+                                <span class="score-negative">{{ @event.score }}</span>
+                            </check>
+                        </td>
+                        <td>{{ @event.teacher_name }}</td>
+                        <td>
+                            <a href="/events/{{ @event.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                            <a href="/events/{{ @event.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                        </td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+        <false>
+            <p class="empty-state">هیچ رویدادی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>

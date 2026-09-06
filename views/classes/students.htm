@@ -1,0 +1,66 @@
+<check if="{{ @class }}">
+    <div class="card">
+        <div class="card-header">
+            <span>
+                👥 دانش‌آموزان کلاس «{{ @class.name }}»
+                (پایه {{ @class.grade }} - بخش {{ @class.section }} - {{ @class.student_count }} دانش‌آموز)
+            </span>
+            <a href="/classes" class="btn btn-outline-secondary btn-sm">← بازگشت به کلاس‌ها</a>
+        </div>
+        <div class="card-body">
+            <check if="{{ count(@students) }}">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>شماره دانش‌آموزی</th>
+                                <th>نام</th>
+                                <th>پایه</th>
+                                <th>کد ملی</th>
+                                <th>نام پدر</th>
+                                <th>تلفن پدر</th>
+                                <th>تلفن مادر</th>
+                                <th>امتیاز کل</th>
+                                <th>تاریخ ثبت</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <repeat group="@students" value="@student">
+                            <tr>
+                                <td>{{ @student.id }}</td>
+                                <td>{{ @student.student_id }}</td>
+                                <td>{{ @student.name }}</td>
+                                <td>{{ @student.grade }}</td>
+                                <td>{{ @student.melli_code }}</td>
+                                <td>{{ @student.father_name }}</td>
+                                <td>{{ @student.father_phone }}</td>
+                                <td>{{ @student.mother_phone }}</td>
+                                <td>
+                                    <check if="{{ @student.total_score > 0 }}">
+                                        <span class="score-positive">{{ @student.total_score }}</span>
+                                    <false>
+                                        <check if="{{ @student.total_score < 0 }}">
+                                            <span class="score-negative">{{ @student.total_score }}</span>
+                                        <false>
+                                            <span>{{ @student.total_score }}</span>
+                                        </check>
+                                    </check>
+                                </td>
+                                <td>{{ \App\Helpers\JalaliDate::format(@student.created_at) }}</td>
+                                <td>
+                                    <a href="/students/{{ @student.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                                    <a href="/students/{{ @student.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                                </td>
+                            </tr>
+                            </repeat>
+                        </tbody>
+                    </table>
+                </div>
+            <false>
+                <p class="empty-state">هیچ دانش‌آموزی در این کلاس ثبت نشده است.</p>
+            </check>
+        </div>
+    </div>
+</check>

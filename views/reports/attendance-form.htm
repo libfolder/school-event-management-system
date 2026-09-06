@@ -1,0 +1,118 @@
+<!-- Toolbar: rows setting + print (screen only, hidden in print) -->
+<div class="toolbar">
+    <form method="GET" action="/reports/attendance-form" style="display:flex;gap:8px;align-items:center;">
+        <label style="font-size:12px;font-weight:bold;">تعداد ردیف هر کلاس:</label>
+        <select name="rows" onchange="this.form.submit()">
+            <option value="2" <check if="{{ @rows == 2 }}">selected</check>>۲ ردیف</option>
+            <option value="4" <check if="{{ @rows == 4 }}">selected</check>>۴ ردیف</option>
+            <option value="6" <check if="{{ @rows == 6 }}">selected</check>>۶ ردیف</option>
+            <option value="8" <check if="{{ @rows == 8 }}">selected</check>>۸ ردیف</option>
+            <option value="10" <check if="{{ @rows == 10 }}">selected</check>>۱۰ ردیف</option>
+            <option value="12" <check if="{{ @rows == 12 }}">selected</check>>۱۲ ردیف</option>
+            <option value="14" <check if="{{ @rows == 14 }}">selected</check>>۱۴ ردیف</option>
+            <option value="16" <check if="{{ @rows == 16 }}">selected</check>>۱۶ ردیف</option>
+            <option value="18" <check if="{{ @rows == 18 }}">selected</check>>۱۸ ردیف</option>
+            <option value="20" <check if="{{ @rows == 20 }}">selected</check>>۲۰ ردیف</option>
+        </select>
+    </form>
+    <div class="toolbar-actions">
+        <a href="/reports" class="back-btn">← بازگشت به گزارش‌ها</a>
+        <button type="button" class="print-btn" onclick="window.print()">🖨️ چاپ فرم</button>
+    </div>
+</div>
+
+<div class="sheet">
+
+    <header class="header">
+
+        <div class="logo">✓</div>
+
+        <div class="header-title">
+            <h1>فرم حضور و غیاب کلاس‌ها</h1>
+            <p>فرم خام برای ثبت دستی غیبت‌ها و تأخیرهای دانش‌آموزان هر کلاس</p>
+        </div>
+
+        <div class="year-box">
+            <small>تاریخ</small>
+            <strong>{{ @today }}</strong>
+        </div>
+
+    </header>
+
+    <repeat group="@attendanceClasses" value="@entry">
+
+        <!-- ===== CLASS ATTENDANCE BLOCK ===== -->
+
+        <section class="section attendance">
+
+            <div class="section-title">
+                <span class="number">🎓</span>
+                حضور و غیاب
+            </div>
+
+            <div class="section-body">
+
+                <table class="attendance-table">
+
+                    <thead>
+                        <tr>
+                            <th class="row">ردیف</th>
+                            <th class="name">نام و نام خانوادگی</th>
+                            <th class="absence">غیبت</th>
+                            <th class="delay">تأخیر</th>
+                            <th class="description">علت / توضیح</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <repeat group="{{ range(1, @entry.rows) }}" value="@i">
+                        <tr>
+                            <td class="center">{{ @i }}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- Separator line between class blocks -->
+
+        <check if="{{ @entry.class.id != @attendanceClasses[count(@attendanceClasses)-1]['class']['id'] }}">
+            <div class="class-separator"></div>
+        </check>
+
+    </repeat>
+
+    <!-- ===== FOOTER ===== -->
+
+    <div class="footer">
+
+        <div class="signature">
+            <span>نام مسئول:</span>
+            <div class="signature-line"></div>
+        </div>
+
+        <div class="signature">
+            <span>امضاء:</span>
+            <div class="signature-line"></div>
+        </div>
+
+        <div class="signature">
+            <span>تاریخ:</span>
+            <div class="signature-line filled">{{ @today }}</div>
+        </div>
+
+    </div>
+
+    <div class="footer-note">
+        اطلاعات این فرم برای ثبت و پیگیری وضعیت دانش‌آموزان در سامانه مدرسه استفاده خواهد شد.
+    </div>
+
+</div>

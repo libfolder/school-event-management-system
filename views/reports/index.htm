@@ -1,0 +1,278 @@
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">🏫</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@classSummary) }}</div>
+            <div class="stat-label">کلاس فعال</div>
+        </div>
+    </div>
+    <div class="stat-card positive">
+        <div class="stat-icon icon-positive">⭐</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@topPositive) }}</div>
+            <div class="stat-label">دانش‌آموز برتر</div>
+        </div>
+    </div>
+    <div class="stat-card negative">
+        <div class="stat-icon icon-negative">⚠️</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@topNegative) }}</div>
+            <div class="stat-label">نیاز به توجه</div>
+        </div>
+    </div>
+    <div class="stat-card absence">
+        <div class="stat-icon icon-absence">🕐</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ count(@topAbsentees) }}</div>
+            <div class="stat-label">غیبت‌کننده</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        🧠 تحلیل و نتیجه‌گیری آمار
+        <a href="/reports/analysis" class="btn btn-primary btn-sm">مشاهده تحلیل</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">
+            تجزیه خودکار آمار ثبت‌شده رویدادها، امتیازها و غیبت‌ها همراه با نتیجه‌گیری و راهکارهای پیشنهادی برای رفع مشکلات شناسایی‌شده.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        📄 فرم جمع‌آوری اطلاعات کلاس
+        <a href="/reports/class-form" class="btn btn-primary btn-sm">مشاهده و چاپ فرم</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">
+            فرم چاپی خام A4 برای جمع‌آوری دستی وضعیت آموزشی، رفتاری و موارد نیازمند پیگیری یک کلاس.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        🕐 فرم حضور و غیاب کلاس‌ها
+        <a href="/reports/attendance-form" class="btn btn-primary btn-sm">مشاهده و چاپ فرم</a>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">
+            فرم چاپی خام برای ثبت دستی غیبت و تأخیر تا ۶ کلاس در یک صفحه، با خط جداکننده بین کلاس‌ها.
+            تعداد ردیف‌های هر کلاس قابل تنظیم است.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">📋 خلاصه عملکرد کلاس‌ها</div>
+    <div class="card-body">
+        <check if="{{ count(@classSummary) }}">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>کلاس</th>
+                            <th>پایه</th>
+                            <th>تعداد دانش‌آموز</th>
+                            <th>تعداد رویداد</th>
+                            <th>جمع امتیاز</th>
+                            <th>امتیاز مثبت</th>
+                            <th>امتیاز منفی</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@classSummary" value="@row">
+                        <tr>
+                            <td>{{ @row.name }}</td>
+                            <td>{{ @row.grade }} {{ @row.section }}</td>
+                            <td>{{ @row.student_count }}</td>
+                            <td>{{ @row.event_count }}</td>
+                            <td>
+                                <check if="{{ @row.total_score > 0 }}">
+                                    <span class="score-positive">{{ @row.total_score }}</span>
+                                <false>
+                                    <check if="{{ @row.total_score < 0 }}">
+                                        <span class="score-negative">{{ @row.total_score }}</span>
+                                    <false>
+                                        <span>{{ @row.total_score }}</span>
+                                    </check>
+                                </check>
+                            </td>
+                            <td><span class="score-positive">{{ @row.positive_score }}</span></td>
+                            <td><span class="score-negative">{{ @row.negative_score }}</span></td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        <false>
+            <p class="empty-state">کلاسی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">🎓 امتحان کلاس</div>
+    <div class="card-body">
+        <form method="GET" action="/reports" class="search-bar">
+            <span class="search-icon">🏫</span>
+            <select name="class_id">
+                <option value="">انتخاب کلاس...</option>
+                <repeat group="@classes" value="@cls">
+                    <option value="{{ @cls.id }}"
+                        <check if="{{ @classId == @cls.id }}">selected</check>
+                    >{{ @cls.name }} - پایه {{ @cls.grade }} {{ @cls.section }}</option>
+                </repeat>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">نمایش گزارش</button>
+        </form>
+
+        <check if="{{ @classId > 0 }}">
+            <check if="{{ count(@classStudents) }}">
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>شماره دانش‌آموزی</th>
+                                <th>نام</th>
+                                <th>تعداد رویدادها</th>
+                                <th>جمع امتیاز</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <repeat group="@classStudents" value="@student">
+                            <tr>
+                                <td>{{ @student.id }}</td>
+                                <td>{{ @student.student_id }}</td>
+                                <td>{{ @student.name }}</td>
+                                <td>{{ @student.event_count }}</td>
+                                <td>
+                                    <check if="{{ @student.total_score > 0 }}">
+                                        <span class="score-positive">{{ @student.total_score }}</span>
+                                    <false>
+                                        <check if="{{ @student.total_score < 0 }}">
+                                            <span class="score-negative">{{ @student.total_score }}</span>
+                                        <false>
+                                            <span>{{ @student.total_score }}</span>
+                                        </check>
+                                    </check>
+                                </td>
+                            </tr>
+                            </repeat>
+                        </tbody>
+                    </table>
+                </div>
+            <false>
+                <p class="empty-state">دانش‌آموزی در این کلاس ثبت نشده است.</p>
+            </check>
+        <false>
+            <p class="empty-state">برای مشاهده گزارش یک کلاس، کلاس را انتخاب کنید.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">⭐ دانش‌آموزان برتر</div>
+    <div class="card-body">
+        <check if="{{ count(@topPositive) }}">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>شماره دانش‌آموزی</th>
+                            <th>نام</th>
+                            <th>کلاس</th>
+                            <th>جمع امتیاز</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@topPositive" value="@student">
+                        <tr>
+                            <td>{{ @student.id }}</td>
+                            <td>{{ @student.student_id }}</td>
+                            <td>{{ @student.name }}</td>
+                            <td>{{ @student.class_name }}</td>
+                            <td><span class="score-positive">{{ @student.total_score }}</span></td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        <false>
+            <p class="empty-state">دانش‌آموزی با امتیاز مثبت یافت نشد.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">⚠️ دانش‌آموزان نیازمند توجه</div>
+    <div class="card-body">
+        <check if="{{ count(@topNegative) }}">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>شماره دانش‌آموزی</th>
+                            <th>نام</th>
+                            <th>کلاس</th>
+                            <th>جمع امتیاز</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@topNegative" value="@student">
+                        <tr>
+                            <td>{{ @student.id }}</td>
+                            <td>{{ @student.student_id }}</td>
+                            <td>{{ @student.name }}</td>
+                            <td>{{ @student.class_name }}</td>
+                            <td><span class="score-negative">{{ @student.total_score }}</span></td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        <false>
+            <p class="empty-state">دانش‌آموزی با امتیاز منفی یافت نشد.</p>
+        </check>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">🕐 بیشترین غیبت‌ها</div>
+    <div class="card-body">
+        <check if="{{ count(@topAbsentees) }}">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>شماره دانش‌آموزی</th>
+                            <th>نام</th>
+                            <th>کلاس</th>
+                            <th>تعداد غیبت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@topAbsentees" value="@student">
+                        <tr>
+                            <td>{{ @student.id }}</td>
+                            <td>{{ @student.student_id }}</td>
+                            <td>{{ @student.name }}</td>
+                            <td>{{ @student.class_name }}</td>
+                            <td><span class="score-negative">{{ @student.absence_count }}</span></td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        <false>
+            <p class="empty-state">هیچ غیبتی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>

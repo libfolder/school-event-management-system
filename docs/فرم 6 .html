@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>فرم جمع‌آوری اطلاعات کلاس</title>
+
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 7mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 9.5px;
+            color: #222;
+            background: #e5e5e5;
+        }
+
+        body {
+            padding: 15px 0;
+        }
+
+        .sheet {
+            width: 210mm;
+            min-height: 283mm;
+            margin: auto;
+            padding: 7mm;
+            background: #fff;
+            border: 1px solid #999;
+        }
+
+        /* =========================
+           Header
+        ========================= */
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding-bottom: 7px;
+            margin-bottom: 7px;
+
+            border-bottom: 2px solid #222;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #222;
+            color: #fff;
+
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .header-title {
+            flex: 1;
+        }
+
+        .header-title h1 {
+            margin: 0 0 3px;
+            font-size: 16px;
+        }
+
+        .header-title p {
+            margin: 0;
+            color: #666;
+            font-size: 8px;
+        }
+
+        .year-box {
+            min-width: 90px;
+            padding: 6px 9px;
+
+            text-align: center;
+
+            background: #f4f4f4;
+            border: 1px solid #666;
+        }
+
+        .year-box small {
+            display: block;
+            margin-bottom: 2px;
+            color: #666;
+            font-size: 7.5px;
+        }
+
+        .year-box strong {
+            font-size: 10px;
+        }
+
+        /* =========================
+           Sections
+        ========================= */
+
+        .section {
+            margin-bottom: 6px;
+            border: 1px solid #777;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+
+            min-height: 24px;
+            padding: 3px 6px;
+
+            background: #dedede;
+            border-bottom: 1px solid #777;
+
+            font-size: 9.5px;
+            font-weight: bold;
+        }
+
+        .number {
+            width: 19px;
+            height: 17px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-left: 6px;
+
+            background: #333;
+            color: #fff;
+
+            font-size: 8px;
+        }
+
+        .section-body {
+            padding: 5px;
+        }
+
+        /* =========================
+           Class Information
+        ========================= */
+
+        .class-info {
+            display: grid;
+            grid-template-columns: 1.7fr .8fr .8fr .7fr;
+            gap: 6px;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .field label {
+            white-space: nowrap;
+            font-weight: bold;
+        }
+
+        .line {
+            flex: 1;
+            height: 19px;
+            border-bottom: 1px solid #777;
+        }
+
+        /* =========================
+           Attendance
+        ========================= */
+
+        .attendance {
+            border: 2px solid #444;
+        }
+
+        .attendance-note {
+            padding: 4px 6px;
+            margin-bottom: 5px;
+
+            background: #f3f3f3;
+            border-right: 3px solid #555;
+
+            font-size: 8px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .attendance-table th,
+        .attendance-table td {
+            border: 1px solid #888;
+            padding: 3px 4px;
+        }
+
+        .attendance-table th {
+            height: 23px;
+            background: #eee;
+            text-align: center;
+        }
+
+        .attendance-table td {
+            height: 25px;
+        }
+
+        .attendance-table .row {
+            width: 7%;
+        }
+
+        .attendance-table .name {
+            width: 34%;
+        }
+
+        .attendance-table .absence {
+            width: 11%;
+        }
+
+        .attendance-table .delay {
+            width: 11%;
+        }
+
+        .attendance-table .description {
+            width: 37%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        /* =========================
+           Two Columns
+        ========================= */
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        /* =========================
+           Check Groups
+        ========================= */
+
+        .check-groups {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .check-group {
+            border: 1px solid #aaa;
+            background: #fafafa;
+        }
+
+        .check-group-title {
+            padding: 3px 5px;
+
+            background: #eeeeee;
+            border-bottom: 1px solid #bbb;
+
+            font-size: 8.5px;
+            font-weight: bold;
+        }
+
+        .check-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px 5px;
+
+            padding: 5px;
+        }
+
+        .check {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+
+            white-space: nowrap;
+            font-size: 8px;
+        }
+
+        .check input {
+            width: 11px;
+            height: 11px;
+            margin: 0;
+        }
+
+        /* =========================
+           Tables
+        ========================= */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: 1px solid #888;
+            padding: 3px 4px;
+        }
+
+        th {
+            background: #eee;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        td {
+            height: 22px;
+        }
+
+        .small-table th {
+            font-size: 8px;
+        }
+
+        .small-table td {
+            height: 22px;
+            font-size: 8px;
+        }
+
+        /* =========================
+           Free Description
+        ========================= */
+
+        .description-box {
+            margin-top: 5px;
+            padding: 4px 5px;
+
+            border: 1px dashed #999;
+            background: #fafafa;
+        }
+
+        .description-title {
+            font-weight: bold;
+            font-size: 8px;
+        }
+
+        .writing-line {
+            height: 19px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* =========================
+           Positive Records
+        ========================= */
+
+        .positive-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px 8px;
+
+            margin-bottom: 5px;
+        }
+
+        /* =========================
+           School Actions
+        ========================= */
+
+        .action-groups {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 5px;
+        }
+
+        /* =========================
+           Important Note
+        ========================= */
+
+        .important-note {
+            padding: 5px;
+
+            border: 1px dashed #888;
+            background: #fafafa;
+
+            font-size: 8px;
+        }
+
+        .note-lines {
+            height: 30px;
+            margin-top: 3px;
+
+            background:
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0,
+                    transparent 14px,
+                    #ddd 15px,
+                    transparent 16px
+                );
+        }
+
+        /* =========================
+           Footer
+        ========================= */
+
+        .footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+
+            margin-top: 7px;
+            padding-top: 6px;
+
+            border-top: 1px solid #555;
+        }
+
+        .signature {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .signature span {
+            white-space: nowrap;
+            font-size: 8px;
+            font-weight: bold;
+        }
+
+        .signature-line {
+            flex: 1;
+            height: 20px;
+            border-bottom: 1px solid #555;
+        }
+
+        .footer-note {
+            margin-top: 4px;
+
+            text-align: center;
+
+            color: #777;
+            font-size: 7px;
+        }
+
+        /* =========================
+           Print
+        ========================= */
+
+        @media print {
+
+            html,
+            body {
+                background: #fff;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .sheet {
+                width: auto;
+                min-height: auto;
+                margin: 0;
+                padding: 0;
+                border: none;
+            }
+
+            .section,
+            .attendance {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="sheet">
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header class="header">
+
+        <div class="logo">✓</div>
+
+        <div class="header-title">
+
+            <h1>فرم جمع‌آوری اطلاعات کلاس و دانش‌آموزان</h1>
+
+            <p>
+                فرم اولیه ثبت وضعیت آموزشی، رفتاری، حضور و موارد نیازمند پیگیری
+            </p>
+
+        </div>
+
+        <div class="year-box">
+
+            <small>سال تحصیلی</small>
+
+            <strong>۱۴۰۵ - ۱۴۰۶</strong>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         1. CLASS INFORMATION
+    ========================= -->
+
+    <section class="section">
+
+        <div class="section-title">
+            <span class="number">۱</span>
+            مشخصات کلاس
+        </div>
+
+        <div class="section-body">
+
+            <div class="class-info">
+
+                <div class="field">
+                    <label>نام آموزگار:</label>
+                    <div class="line"></div>
+                </div>
+
+                <div class="field">
+                    <label>پایه:</label>
+                    <div class="line"></div>
+                </div>
+
+                <div class="field">
+                    <label>کلاس:</label>
+                    <div class="line"></div>
+                </div>
+
+                <div class="field">
+                    <label>تعداد:</label>
+                    <div class="line"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         2. ATTENDANCE
+    ========================= -->
+
+    <section class="section attendance">
+
+        <div class="section-title">
+            <span class="number">۲</span>
+            حضور و غیاب دانش‌آموزان
+        </div>
+
+        <div class="section-body">
+
+            <div class="attendance-note">
+                فقط دانش‌آموزانی را ثبت کنید که غیبت یا تأخیر قابل توجه دارند.
+                در صورت نیاز، علت یا توضیح مختصر را درج کنید.
+            </div>
+
+            <table class="attendance-table">
+
+                <thead>
+
+                    <tr>
+                        <th class="row">ردیف</th>
+                        <th class="name">نام و نام خانوادگی</th>
+                        <th class="absence">غیبت</th>
+                        <th class="delay">تأخیر</th>
+                        <th class="description">علت / توضیح</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td class="center">۱</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">۲</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">۳</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">۴</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td class="center">۵</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         3. EDUCATIONAL / POSITIVE
+    ========================= -->
+
+    <div class="two-columns">
+
+
+        <!-- EDUCATIONAL -->
+
+        <section class="section">
+
+            <div class="section-title">
+                <span class="number">۳</span>
+                دانش‌آموزان نیازمند توجه آموزشی
+            </div>
+
+            <div class="section-body">
+
+                <div class="check-list">
+
+                    <label class="check">
+                        <input type="checkbox">
+                        ضعف درسی
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        افت تحصیلی
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        ضعف در تکالیف
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        عدم مطالعه
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        عدم آوردن کتاب
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        عدم آوردن لوازم
+                    </label>
+
+                </div>
+
+                <table class="small-table">
+
+                    <thead>
+
+                        <tr>
+                            <th style="width:35%;">دانش‌آموز</th>
+                            <th>موضوع / توضیح</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div class="description-box">
+
+                    <div class="description-title">
+                        موضوع آموزشی دیگری که نیازمند توجه است:
+                    </div>
+
+                    <div class="writing-line"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- POSITIVE -->
+
+        <section class="section">
+
+            <div class="section-title">
+                <span class="number">۴</span>
+                موارد مثبت و شایسته ثبت
+            </div>
+
+            <div class="section-body">
+
+                <div class="positive-list">
+
+                    <label class="check">
+                        <input type="checkbox">
+                        پیشرفت درسی
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        مشارکت فعال
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        نظم
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        مسئولیت‌پذیری
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        کمک به همکلاسی
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        همکاری با معلم
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        رفتار بسیار خوب
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        موفقیت در مسابقات
+                    </label>
+
+                    <label class="check">
+                        <input type="checkbox">
+                        فعالیت ویژه
+                    </label>
+
+                </div>
+
+                <table class="small-table">
+
+                    <thead>
+
+                        <tr>
+                            <th style="width:35%;">دانش‌آموز</th>
+                            <th>دلیل / توضیح</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div class="description-box">
+
+                    <div class="description-title">
+                        رفتار یا موفقیت مثبت دیگری که شایسته ثبت است:
+                    </div>
+
+                    <div class="writing-line"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================
+         5. BEHAVIOR
+    ========================= -->
+
+    <section class="section">
+
+        <div class="section-title">
+            <span class="number">۵</span>
+            رفتارها و رویدادهای قابل پیگیری
+        </div>
+
+        <div class="section-body">
+
+            <div class="check-groups">
+
+
+                <!-- DAILY BEHAVIOR -->
+
+                <div class="check-group">
+
+                    <div class="check-group-title">
+                        رفتار و نظم روزمره
+                    </div>
+
+                    <div class="check-list">
+
+                        <label class="check">
+                            <input type="checkbox">
+                            بی‌نظمی در کلاس
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            صحبت بدون اجازه
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            ایجاد سر و صدا
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            عدم رعایت نوبت
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            دویدن در راهرو
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            بی‌توجهی به معلم
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EDUCATIONAL -->
+
+                <div class="check-group">
+
+                    <div class="check-group-title">
+                        آموزشی و کلاسی
+                    </div>
+
+                    <div class="check-list">
+
+                        <label class="check">
+                            <input type="checkbox">
+                            انجام ندادن تکالیف
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            عدم مطالعه
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            عدم آوردن کتاب
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            عدم آوردن لوازم
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            تقلب
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            تحویل دیرهنگام کار
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- IMPORTANT -->
+
+                <div class="check-group">
+
+                    <div class="check-group-title">
+                        موارد مهم رفتاری
+                    </div>
+
+                    <div class="check-list">
+
+                        <label class="check">
+                            <input type="checkbox">
+                            درگیری
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            آزار همکلاسی
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            بی‌احترامی به معلم
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            خروج بدون اجازه
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            رفتار پرخطر
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            خرابکاری
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            تلفن همراه
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            وسیله ممنوعه
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <br>
+
+            <table class="small-table">
+
+                <thead>
+
+                    <tr>
+                        <th style="width:25%;">دانش‌آموز</th>
+                        <th style="width:28%;">رویداد</th>
+                        <th>شرح مختصر</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <div class="description-box">
+
+                <div class="description-title">
+                    رویداد یا رفتار دیگری که در فهرست بالا وجود ندارد:
+                </div>
+
+                <div class="writing-line"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         6. SCHOOL ACTION
+    ========================= -->
+
+    <section class="section">
+
+        <div class="section-title">
+            <span class="number">۶</span>
+            موارد نیازمند اقدام مدرسه
+        </div>
+
+        <div class="section-body">
+
+            <div class="action-groups">
+
+
+                <!-- FAMILY -->
+
+                <div class="check-group">
+
+                    <div class="check-group-title">
+                        ارتباط با خانواده
+                    </div>
+
+                    <div class="check-list">
+
+                        <label class="check">
+                            <input type="checkbox">
+                            تماس با والدین
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            دعوت والدین
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            پیگیری غیبت
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            دریافت رضایت‌نامه
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SCHOOL -->
+
+                <div class="check-group">
+
+                    <div class="check-group-title">
+                        پیگیری توسط مدرسه
+                    </div>
+
+                    <div class="check-list">
+
+                        <label class="check">
+                            <input type="checkbox">
+                            ارجاع به معاون
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            ارجاع به مشاور
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            پیگیری آموزشی
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            پیگیری رفتاری
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRIORITY -->
+
+                <div class="check-group">
+
+                    <div class="check-group-title">
+                        میزان اهمیت
+                    </div>
+
+                    <div class="check-list">
+
+                        <label class="check">
+                            <input type="checkbox">
+                            عادی
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            مهم
+                        </label>
+
+                        <label class="check">
+                            <input type="checkbox">
+                            فوری
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <br>
+
+            <table class="small-table">
+
+                <thead>
+
+                    <tr>
+                        <th style="width:25%;">دانش‌آموز</th>
+                        <th style="width:30%;">اقدام پیشنهادی</th>
+                        <th>توضیح</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <div class="description-box">
+
+                <div class="description-title">
+                    اقدام دیگری که نیاز است مدرسه درباره آن تصمیم‌گیری کند:
+                </div>
+
+                <div class="writing-line"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         7. IMPORTANT NOTE
+    ========================= -->
+
+    <section class="section">
+
+        <div class="section-title">
+
+            <span class="number">۷</span>
+
+            نکته مهم برای مسئول مدرسه
+
+        </div>
+
+        <div class="section-body">
+
+            <div class="important-note">
+
+                مواردی که الزاماً رویداد یا تخلف محسوب نمی‌شوند،
+                اما اطلاع مدیر، معاون یا مشاور مدرسه از آن‌ها اهمیت دارد.
+
+                <div class="note-lines"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <div class="footer">
+
+        <div class="signature">
+
+            <span>نام آموزگار:</span>
+
+            <div class="signature-line"></div>
+
+        </div>
+
+        <div class="signature">
+
+            <span>امضاء:</span>
+
+            <div class="signature-line"></div>
+
+        </div>
+
+        <div class="signature">
+
+            <span>تاریخ:</span>
+
+            <div class="signature-line"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-note">
+        اطلاعات این فرم برای ثبت و پیگیری وضعیت دانش‌آموزان در سامانه مدرسه استفاده خواهد شد.
+    </div>
+
+</div>
+
+</body>
+</html>

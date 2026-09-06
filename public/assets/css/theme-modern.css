@@ -1,0 +1,582 @@
+/* ==========================================================================
+   Theme: "Modern" — تم مدرن
+   Clean, flat, light dashboard theme (blue/sky accents, slate text).
+   Depends on global.css (tokens, base elements, shared components).
+   Layout: fixed header (brand + full navigation + quick actions) + content.
+   Fully responsive (RTL-first). The whole navigation is always visible.
+   Switch back to the previous theme by loading theme.css instead.
+   ========================================================================== */
+
+/* ---------- Vazir font (local, Persian, RTL) ---------- */
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Medium.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Medium.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Bold.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Bold.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Light.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Light.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------- Theme tokens (override global defaults) ---------- */
+
+:root {
+    /* Text — slate */
+    --text-1: #0f172a;
+    --text-2: #334155;
+    --text-3: #94a3b8;
+
+    /* Surfaces */
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+
+    /* Brand — blue */
+    --primary: #2563eb;
+    --primary-strong: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --primary-ink: #1e40af;
+
+    /* Accent — sky */
+    --accent: #0ea5e9;
+    --accent-soft: #f0f9ff;
+    --accent-ink: #0369a1;
+
+    /* Shape — softer corners */
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+
+    /* Elevation — flat, crisp */
+    --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.05), 0 2px 8px rgba(15, 23, 42, 0.05);
+    --shadow-2: 0 4px 12px rgba(15, 23, 42, 0.08), 0 12px 28px rgba(15, 23, 42, 0.08);
+    --shadow-3: 0 10px 22px rgba(15, 23, 42, 0.12), 0 24px 54px rgba(15, 23, 42, 0.14);
+
+    /* Header metrics */
+    --header-height: 64px;
+}
+
+/* ---------- App shell ---------- */
+
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ---------- Fixed header ---------- */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+}
+
+.topbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: 1280px;
+    min-height: var(--header-height);
+    margin: 0 auto;
+    padding: 6px 20px;
+    flex-wrap: wrap;
+}
+
+/* Brand */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-shrink: 0;
+}
+
+.brand:hover {
+    text-decoration: none;
+}
+
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    font-size: 21px;
+    border-radius: 13px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.35;
+}
+
+.brand-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-1);
+    white-space: nowrap;
+}
+
+.brand-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+/* Navigation (categorized dropdown groups, always visible) */
+
+.topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+    padding: 4px 0;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--text-1);
+    background: var(--surface-2);
+    text-decoration: none;
+}
+
+.nav-link.active {
+    font-weight: 700;
+    color: var(--primary-ink);
+    background: var(--primary-soft);
+}
+
+.nav-link .nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.nav-group {
+    position: relative;
+}
+
+.nav-drop-toggle {
+    cursor: pointer;
+    font-family: inherit;
+    background: none;
+    border: none;
+}
+
+.drop-caret {
+    font-size: 10px;
+    opacity: 0.55;
+    transition: transform var(--transition);
+}
+
+.nav-group.open .drop-caret {
+    transform: rotate(180deg);
+}
+
+/* Dropdown panels */
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline-start: 0;
+    z-index: 50;
+    display: none;
+    min-width: 210px;
+    padding: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-3);
+    overflow: visible;
+}
+
+.nav-group.open .dropdown {
+    display: block;
+    animation: drop-in 0.14s ease;
+}
+
+@keyframes drop-in {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+}
+
+.dropdown-item:hover {
+    background: var(--primary-soft);
+    color: var(--primary-ink);
+    text-decoration: none;
+}
+
+.dropdown-separator {
+    height: 1px;
+    margin: 5px 8px;
+    background: var(--border);
+}
+
+.dropdown-label {
+    padding: 8px 12px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+}
+
+/* Quick actions */
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.topbar-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--primary-strong), var(--accent));
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    white-space: nowrap;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.topbar-cta:hover {
+    text-decoration: none;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
+}
+
+.topbar-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    color: var(--text-2);
+    background: var(--surface-2);
+    border-radius: 999px;
+    transition: background var(--transition), color var(--transition);
+}
+
+.topbar-link:hover {
+    background: var(--primary-soft);
+    color: var(--primary-ink);
+    text-decoration: none;
+}
+
+.topbar-clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-1);
+    background: var(--surface-2);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ---------- Content area ---------- */
+
+.content {
+    flex: 1;
+    padding: 28px 20px;
+    background: var(--bg);
+}
+
+.container {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+/* ---------- Page head (title + quick links block) ---------- */
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.page-title {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--text-1);
+}
+
+.page-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ---------- Stat cards (home) ---------- */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 26px;
+}
+
+.stat-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary);
+}
+
+.stat-card.positive::before {
+    background: var(--success);
+}
+
+.stat-card.negative::before {
+    background: var(--danger);
+}
+
+.stat-card.warning::before {
+    background: var(--warning);
+}
+
+.stat-card.absence::before {
+    background: var(--accent);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2);
+}
+
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    font-size: 22px;
+    border-radius: 12px;
+    background: var(--primary-soft);
+}
+
+.stat-card.positive .stat-icon {
+    background: var(--success-soft);
+}
+
+.stat-card.negative .stat-icon {
+    background: var(--danger-soft);
+}
+
+.stat-card.warning .stat-icon {
+    background: var(--warning-soft);
+}
+
+.stat-card.absence .stat-icon {
+    background: var(--accent-soft);
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-1);
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+    font-size: 12.5px;
+    color: var(--text-3);
+}
+
+/* ---------- Flat dark dialog titlebars ---------- */
+
+.dialog-titlebar {
+    background: #0f172a;
+}
+
+/* ---------- Footer status line ---------- */
+
+.status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 11.5px;
+    color: var(--text-3);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
+
+.status-meta {
+    font-weight: 700;
+    color: var(--primary-ink);
+    background: var(--primary-soft);
+    padding: 2px 10px;
+    border-radius: 999px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+    .brand-text {
+        display: none;
+    }
+
+    .topbar-inner {
+        gap: 10px;
+        padding: 6px 14px;
+    }
+
+    .topbar-cta {
+        display: none;
+    }
+
+    .nav-link {
+        padding: 8px 11px;
+    }
+}
+
+@media (max-width: 720px) {
+    .topbar-actions .topbar-link {
+        display: none;
+    }
+
+    .content {
+        padding: 18px 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .nav-link {
+        padding: 8px 10px;
+        font-size: 12.5px;
+    }
+}
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

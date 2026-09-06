@@ -1,0 +1,159 @@
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ @summary.event_count }}</div>
+            <div class="stat-label">کل رویدادهای ثبت‌شده</div>
+        </div>
+    </div>
+    <div class="stat-card {{ @summary.total_score >= 0 ? 'positive' : 'negative' }}">
+        <div class="stat-icon {{ @summary.total_score >= 0 ? 'icon-positive' : 'icon-negative' }}">{{ @summary.total_score >= 0 ? '⭐' : '⚠️' }}</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ @summary.total_score }}</div>
+            <div class="stat-label">جمع کل امتیاز</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ @summary.avg_score }}</div>
+            <div class="stat-label">میانگین امتیاز هر رویداد</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">🎓</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ @summary.per_student }}</div>
+            <div class="stat-label">رویداد به ازای هر دانش‌آموز</div>
+        </div>
+    </div>
+    <div class="stat-card {{ @summary.balance >= 0 ? 'positive' : 'negative' }}">
+        <div class="stat-icon {{ @summary.balance >= 0 ? 'icon-positive' : 'icon-negative' }}">{{ @summary.balance >= 0 ? '✅' : '⚠️' }}</div>
+        <div class="stat-info">
+            <div class="stat-value">{{ @summary.balance }}%</div>
+            <div class="stat-label">شاخص توازن مثبت/منفی</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">🧮 تجزیه آمار ثبت‌شده</div>
+    <div class="card-body">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>شاخص</th>
+                        <th>مقدار</th>
+                        <th>تفسیر</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>تعداد رویداد ثبت‌شده</td>
+                        <td>{{ @stats.score.event_count }}</td>
+                        <td><span class="score-positive">{{ @stats.score.positive_score }}</span> مثبت / <span class="score-negative">{{ @stats.score.negative_score }}</span> منفی</td>
+                    </tr>
+                    <tr>
+                        <td>جمع امتیاز مثبت</td>
+                        <td><span class="score-positive">{{ @stats.score.positive_score }}</span></td>
+                        <td>مجموع تشویق‌ها و رفتارهای مطلوب ثبت‌شده</td>
+                    </tr>
+                    <tr>
+                        <td>جمع امتیاز منفی</td>
+                        <td><span class="score-negative">{{ @stats.score.negative_score }}</span></td>
+                        <td>مجموع تخلفات و موارد نیازمند پیگیری</td>
+                    </tr>
+                    <tr>
+                        <td>دانش‌آموزان</td>
+                        <td>{{ @stats.students.student_count }}</td>
+                        <td><span class="score-positive">{{ @stats.students.positive_students }}</span> مثبت / <span class="score-negative">{{ @stats.students.negative_students }}</span> منفی / <span>{{ @stats.students.inactive }}</span> بدون رویداد</td>
+                    </tr>
+                    <tr>
+                        <td>غیبت روزانه</td>
+                        <td><span class="score-negative">{{ @stats.absences.count }}</span></td>
+                        <td>بیشترین منبع امتیاز منفی در سیستم</td>
+                    </tr>
+                    <tr>
+                        <td>اقدامات پیگیری باز</td>
+                        <td><span class="status-open">{{ @stats.actions.open_count }}</span></td>
+                        <td>احضار والدین: {{ @stats.actions.parent_meetings }} / معرفی به مشاور: {{ @stats.actions.mentor_referrals }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<check if="{{ count(@stats.topTypes) }}">
+    <div class="card">
+        <div class="card-header">🔁 پرتکرارترین انواع رویداد</div>
+        <div class="card-body">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>نوع رویداد</th>
+                            <th>جهت</th>
+                            <th>امتیاز پیش‌فرض</th>
+                            <th>تعداد ثبت</th>
+                            <th>جمع امتیاز</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@stats.topTypes" value="@type">
+                        <tr>
+                            <td>{{ @type.name }}</td>
+                            <td>
+                                <check if="{{ @type.is_positive }}">
+                                    <span class="score-positive">مثبت</span>
+                                <false>
+                                    <span class="score-negative">منفی</span>
+                                </check>
+                            </td>
+                            <td>{{ @type.default_score }}</td>
+                            <td>{{ @type.usage_count }}</td>
+                            <td>
+                                <check if="{{ @type.score_sum > 0 }}">
+                                    <span class="score-positive">{{ @type.score_sum }}</span>
+                                <false>
+                                    <span class="score-negative">{{ @type.score_sum }}</span>
+                                </check>
+                            </td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</check>
+
+<div class="card">
+    <div class="card-header">🧠 نتیجه‌گیری و راهکارها</div>
+    <div class="card-body">
+        <check if="{{ count(@findings) }}">
+            <repeat group="@findings" value="@finding">
+                <div class="finding finding-{{ @finding.level }}">
+                    <div class="finding-header">
+                        <span class="finding-icon">{{ @finding.icon }}</span>
+                        <span class="finding-title">{{ @finding.title }}</span>
+                    </div>
+                    <p class="finding-text">{{ @finding.text }}</p>
+                    <check if="{{ count(@finding.solutions) }}">
+                        <div class="finding-solutions">
+                            <div class="finding-solutions-title">💡 راهکارهای پیشنهادی:</div>
+                            <ul>
+                                <repeat group="@finding.solutions" value="@solution">
+                                    <li>{{ @solution }}</li>
+                                </repeat>
+                            </ul>
+                        </div>
+                    </check>
+                </div>
+            </repeat>
+        <false>
+            <p class="empty-state">آماری برای تحلیل ثبت نشده است.</p>
+        </check>
+    </div>
+</div>

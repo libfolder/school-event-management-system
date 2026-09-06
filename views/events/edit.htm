@@ -1,0 +1,102 @@
+<check if="{{ @errors }}">
+    <div class="alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-body">
+            <div class="alert-title">خطا در ثبت اطلاعات</div>
+            <ul class="alert-list">
+                <repeat group="@errors" key="@field" value="@message">
+                    <li>{{ @message }}</li>
+                </repeat>
+            </ul>
+        </div>
+        <button type="button" class="alert-close" onclick="this.closest('.alert').remove()">×</button>
+    </div>
+</check>
+
+<div class="dialog">
+    <div class="dialog-titlebar">
+        <span class="dialog-title">
+            <check if="{{ @action == 'edit' }}">
+                🗂️ ویرایش رویداد
+            <false>
+                🗂️ ثبت رویداد جدید
+            </check>
+        </span>
+        <a href="/events" class="dialog-close" title="بستن">×</a>
+    </div>
+    <form method="POST" action="{{ @form_action }}" class="dialog-body" novalidate>
+        <div class="form-row">
+            <div class="form-group {{ @errors.student_id ?? '' ? 'has-error' : '' }}">
+                <label>دانش‌آموز:</label>
+                <select name="student_id" required>
+                    <option value="">انتخاب دانش‌آموز</option>
+                    <repeat group="@students" value="@student">
+                        <option value="{{ @student.id }}"
+                            <check if="{{ (@old.student_id ?? 0) == @student.id }}">
+                                selected
+                            </check>
+                        >{{ @student.name }} - {{ @student.class_name }}</option>
+                    </repeat>
+                </select>
+                <check if="{{ @errors.student_id ?? '' }}">
+                    <span class="field-error">{{ @errors.student_id }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.event_type_id ?? '' ? 'has-error' : '' }}">
+                <label>نوع رویداد:</label>
+                <select name="event_type_id" id="event_type_id" required onchange="updateScore()">
+                    <option value="">انتخاب نوع رویداد</option>
+                    <repeat group="@eventTypes" value="@type">
+                        <option value="{{ @type.id }}" data-score="{{ @type.default_score }}"
+                            <check if="{{ (@old.event_type_id ?? 0) == @type.id }}">
+                                selected
+                            </check>
+                        >{{ @type.name }} ({{ @type.default_score }})</option>
+                    </repeat>
+                </select>
+                <check if="{{ @errors.event_type_id ?? '' }}">
+                    <span class="field-error">{{ @errors.event_type_id }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.score ?? '' ? 'has-error' : '' }}">
+                <label>امتیاز:</label>
+                <input type="number" name="score" id="score" value="{{ @old.score ?? '' }}" min="-100" max="100" required>
+                <check if="{{ @errors.score ?? '' }}">
+                    <span class="field-error">{{ @errors.score }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.event_date ?? '' ? 'has-error' : '' }}">
+                <label>تاریخ رویداد:</label>
+                <input type="text" name="event_date" value="{{ @old.event_date ?? \App\Helpers\JalaliDate::format(@event.event_date ?? '') }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input" required>
+                <check if="{{ @errors.event_date ?? '' }}">
+                    <span class="field-error">{{ @errors.event_date }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>توضیحات:</label>
+                <textarea name="description" placeholder="توضیحات اختیاری">{{ @old.description ?? '' }}</textarea>
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button type="submit" class="btn btn-success">
+                <check if="{{ @action == 'edit' }}">به‌روزرسانی<false>ثبت</false></check>
+            </button>
+            <a href="/events" class="btn btn-outline-secondary">لغو</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateScore() {
+    var select = document.getElementById('event_type_id');
+    var selectedOption = select.options[select.selectedIndex];
+    var score = selectedOption.getAttribute('data-score');
+    if (score) {
+        document.getElementById('score').value = score;
+    }
+}
+</script>

@@ -1,0 +1,124 @@
+<check if="{{ @errors }}">
+    <div class="alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-body">
+            <div class="alert-title">خطا در ثبت اطلاعات</div>
+            <ul class="alert-list">
+                <repeat group="@errors" key="@field" value="@message">
+                    <li>{{ @message }}</li>
+                </repeat>
+            </ul>
+        </div>
+        <button type="button" class="alert-close" onclick="this.closest('.alert').remove()">×</button>
+    </div>
+</check>
+
+<div class="dialog">
+    <div class="dialog-titlebar">
+        <span class="dialog-title">
+            <check if="{{ @action == 'edit' }}">
+                🗂️ ویرایش اقدام
+            <false>
+                🗂️ ثبت اقدام جدید
+            </check>
+        </span>
+        <a href="/actions" class="dialog-close" title="بستن">×</a>
+    </div>
+    <form method="POST" action="{{ @form_action }}" class="dialog-body" novalidate>
+        <div class="form-row">
+            <div class="form-group {{ @errors.student_id ?? '' ? 'has-error' : '' }}">
+                <label>دانش‌آموز:</label>
+                <select name="student_id" required>
+                    <option value="">انتخاب دانش‌آموز</option>
+                    <repeat group="@students" value="@student">
+                        <option value="{{ @student.id }}"
+                            <check if="{{ (@old.student_id ?? 0) == @student.id }}">
+                                selected
+                            </check>
+                        >{{ @student.name }} - {{ @student.class_name }}</option>
+                    </repeat>
+                </select>
+                <check if="{{ @errors.student_id ?? '' }}">
+                    <span class="field-error">{{ @errors.student_id }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.event_id ?? '' ? 'has-error' : '' }}">
+                <label>رویداد مرتبط:</label>
+                <select name="event_id">
+                    <option value="">انتخاب (اختیاری)</option>
+                    <repeat group="@events" value="@event">
+                        <option value="{{ @event.id }}"
+                            <check if="{{ (@old.event_id ?? 0) == @event.id }}">
+                                selected
+                            </check>
+                        >رویداد # {{ @event.id }} - {{ @event.student_name }}</option>
+                    </repeat>
+                </select>
+                <check if="{{ @errors.event_id ?? '' }}">
+                    <span class="field-error">{{ @errors.event_id }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.action_type ?? '' ? 'has-error' : '' }}">
+                <label>نوع اقدام:</label>
+                <select name="action_type" required>
+                    <option value="reward" <check if="{{ (@old.action_type ?? '') == 'reward' }}">selected</check>>تشویق و پاداش</option>
+                    <option value="honor_board" <check if="{{ (@old.action_type ?? '') == 'honor_board' }}">selected</check>>بورد افتخار راهرو</option>
+                    <option value="student_of_week" <check if="{{ (@old.action_type ?? '') == 'student_of_week' }}">selected</check>>معرفی در صف (دانش‌آموز هفته)</option>
+                    <option value="prize" <check if="{{ (@old.action_type ?? '') == 'prize' }}">selected</check>>اهدای جایزه</option>
+                    <option value="teacher_referral" <check if="{{ (@old.action_type ?? '') == 'teacher_referral' }}">selected</check>>ارجاع به معلم مربوطه</option>
+                    <option value="parent_meeting" <check if="{{ (@old.action_type ?? '') == 'parent_meeting' }}">selected</check>>احضار والدین</option>
+                    <option value="mentor_referral" <check if="{{ (@old.action_type ?? '') == 'mentor_referral' }}">selected</check>>معرفی به مشاور</option>
+                </select>
+                <check if="{{ @errors.action_type ?? '' }}">
+                    <span class="field-error">{{ @errors.action_type }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.status ?? '' ? 'has-error' : '' }}">
+                <label>وضعیت:</label>
+                <select name="status" required>
+                    <option value="open" <check if="{{ (@old.status ?? 'open') == 'open' }}">selected</check>>باز</option>
+                    <option value="completed" <check if="{{ (@old.status ?? '') == 'completed' }}">selected</check>>تکمیل شده</option>
+                </select>
+                <check if="{{ @errors.status ?? '' }}">
+                    <span class="field-error">{{ @errors.status }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.title ?? '' ? 'has-error' : '' }}">
+                <label>عنوان:</label>
+                <input type="text" name="title" value="{{ @old.title ?? (@item.title ?? '') }}" required>
+                <check if="{{ @errors.title ?? '' }}">
+                    <span class="field-error">{{ @errors.title }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.action_date ?? '' ? 'has-error' : '' }}">
+                <label>تاریخ اقدام:</label>
+                <input type="text" name="action_date" value="{{ @old.action_date ?? \App\Helpers\JalaliDate::format(@item.action_date ?? '') }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input">
+                <check if="{{ @errors.action_date ?? '' }}">
+                    <span class="field-error">{{ @errors.action_date }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>توضیحات:</label>
+                <textarea name="description">{{ @old.description ?? (@item.description ?? '') }}</textarea>
+            </div>
+            <check if="{{ @action == 'edit' }}">
+                <div class="form-group">
+                    <label>نتیجه نهایی:</label>
+                    <textarea name="result">{{ @old.result ?? (@item.result ?? '') }}</textarea>
+                </div>
+            </check>
+        </div>
+        <div class="dialog-buttons">
+            <button type="submit" class="btn btn-success">
+                <check if="{{ @action == 'edit' }}">به‌روزرسانی<false>ثبت</false></check>
+            </button>
+            <a href="/actions" class="btn btn-outline-secondary">لغو</a>
+        </div>
+    </form>
+</div>

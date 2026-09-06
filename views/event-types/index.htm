@@ -1,0 +1,50 @@
+<div class="card">
+    <div class="card-header">
+        انواع رویدادها
+        <a href="/event-types/create" class="btn btn-success btn-sm">＋ اضافه کردن نوع رویداد</a>
+    </div>
+    <div class="card-body">
+        <check if="{{ count(@eventTypes) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نام</th>
+                        <th>امتیاز پیش‌فرض</th>
+                        <th>نوع</th>
+                        <th>توضیحات</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@eventTypes" value="@type">
+                    <tr>
+                        <td>{{ @type.id }}</td>
+                        <td>{{ @type.name }}</td>
+                        <td>
+                            <check if="{{ @type.is_positive }}">
+                                <span class="score-positive">{{ @type.default_score }}</span>
+                            <false>
+                                <span class="score-negative">{{ @type.default_score }}</span>
+                            </check>
+                        </td>
+                        <td>
+                            <check if="{{ @type.is_positive }}">
+                                <span class="status-completed">مثبت</span>
+                            <false>
+                                <span class="status-open">منفی</span>
+                            </check>
+                        </td>
+                        <td>{{ @type.description }}</td>
+                        <td>
+                            <a href="/event-types/{{ @type.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                        </td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+        <false>
+            <p class="empty-state">هیچ نوع رویدادی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>

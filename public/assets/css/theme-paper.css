@@ -1,0 +1,774 @@
+/* ==========================================================================
+   Theme: "Paper" — تم کاغذی
+   Warm paper texture, handwritten-inspired cards, ruled lines, ink colors.
+   Depends on global.css (tokens, base elements, shared components).
+   Layout: fixed header (brand + categorized navigation) + content.
+   The header markup is shared with theme-modern.css; loading this file
+   instead gives the paper look. Fully responsive (RTL-first).
+   ========================================================================== */
+
+/* ---------- Vazir font (local, Persian, RTL) ---------- */
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Medium.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Medium.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src: url('../fonts/vazir-font-v16.1.0/Vazir-Bold.woff2') format('woff2'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Bold.woff') format('woff'),
+         url('../fonts/vazir-font-v16.1.0/Vazir-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---------- Theme tokens (paper palette) ---------- */
+
+:root {
+    /* Text — ink on paper */
+    --text-1: #2d2a26;
+    --text-2: #4f4a42;
+    --text-3: #8d8578;
+
+    /* Surfaces — warm cream paper */
+    --bg: #f6f1e7;
+    --surface: #fffdf7;
+    --surface-2: #f4eee1;
+    --border: #e5dcc8;
+
+    /* Brand — warm brown ink */
+    --primary: #8a5a2b;
+    --primary-strong: #75491f;
+    --primary-soft: #f3e8d8;
+    --primary-ink: #5e3a17;
+
+    /* Accent — clay red */
+    --accent: #b3552e;
+    --accent-soft: #f7e6dc;
+    --accent-ink: #8f3d1c;
+
+    /* Status tones — faded, paper-friendly */
+    --success: #6d8a4e;
+    --success-soft: #ecf0e2;
+    --success-ink: #4e6b33;
+
+    --danger: #b0483a;
+    --danger-soft: #f7e3e0;
+    --danger-ink: #8c3428;
+
+    --warning: #c08a2d;
+    --warning-soft: #f6ecd5;
+    --warning-ink: #8f6519;
+
+    /* Shape — slightly imperfect */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+
+    /* Elevation — paper layers */
+    --shadow-1: 0 1px 2px rgba(82, 71, 50, 0.08), 0 3px 8px rgba(82, 71, 50, 0.07);
+    --shadow-2: 0 3px 8px rgba(82, 71, 50, 0.10), 0 10px 24px rgba(82, 71, 50, 0.10);
+    --shadow-3: 0 8px 18px rgba(82, 71, 50, 0.14), 0 20px 44px rgba(82, 71, 50, 0.14);
+
+    /* Header metrics */
+    --header-height: 64px;
+}
+
+/* ---------- App shell ---------- */
+
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ---------- Paper background texture ---------- */
+
+body {
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(160, 130, 90, 0.06) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(160, 130, 90, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(160, 130, 90, 0.04) 0%, transparent 45%);
+}
+
+/* ---------- Fixed header — kraft card ---------- */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    overflow: visible;
+    background: #efe6d3;
+    background-image: linear-gradient(rgba(255, 253, 247, 0.55), rgba(255, 253, 247, 0.35));
+    border-bottom: 2px solid #d9cbab;
+    box-shadow: 0 2px 6px rgba(82, 71, 50, 0.10);
+}
+
+.topbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    max-width: 1280px;
+    min-height: var(--header-height);
+    margin: 0 auto;
+    padding: 6px 20px;
+    flex-wrap: wrap;
+}
+
+/* Brand — stamp look */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-shrink: 0;
+}
+
+.brand:hover {
+    text-decoration: none;
+}
+
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    font-size: 21px;
+    border-radius: 6px;
+    color: #fffdf7;
+    background: var(--accent);
+    border: 2px solid #93401f;
+    box-shadow: inset 0 0 0 2px rgba(255, 253, 247, 0.25), 0 3px 6px rgba(82, 71, 50, 0.25);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    line-height: 1.35;
+}
+
+.brand-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-1);
+    white-space: nowrap;
+}
+
+.brand-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-ink);
+    white-space: nowrap;
+}
+
+/* Navigation (categorized dropdown groups) */
+
+.topbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+    padding: 4px 0;
+}
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.nav-link:hover {
+    color: var(--text-1);
+    background: var(--surface);
+    border-color: var(--border);
+    text-decoration: none;
+}
+
+.nav-link.active {
+    font-weight: 700;
+    color: var(--primary-ink);
+    background: var(--surface);
+    border-color: #d0b98c;
+    box-shadow: inset 0 -2px 0 var(--primary);
+}
+
+.nav-link .nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+
+.nav-group {
+    position: relative;
+}
+
+.nav-drop-toggle {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.drop-caret {
+    font-size: 10px;
+    opacity: 0.55;
+    transition: transform var(--transition);
+}
+
+.nav-group.open .drop-caret {
+    transform: rotate(180deg);
+}
+
+/* Dropdowns — paper cards with torn edge feel */
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline-start: 0;
+    z-index: 50;
+    display: none;
+    min-width: 210px;
+    padding: 8px;
+    background: var(--surface);
+    border: 1px solid #d9cbab;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-3);
+}
+
+.nav-group.open .dropdown {
+    display: block;
+    animation: drop-in 0.14s ease;
+}
+
+@keyframes drop-in {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition: background var(--transition), color var(--transition);
+}
+
+.dropdown-item:hover {
+    background: var(--primary-soft);
+    color: var(--primary-ink);
+    text-decoration: none;
+}
+
+.dropdown-separator {
+    height: 1px;
+    margin: 6px 8px;
+    background: var(--border);
+}
+
+.dropdown-label {
+    padding: 8px 12px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+}
+
+/* Quick actions */
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.topbar-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fffdf7;
+    background: var(--accent);
+    border: 1px solid #93401f;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 3px 8px rgba(82, 71, 50, 0.25);
+    white-space: nowrap;
+    transition: transform var(--transition), background var(--transition);
+}
+
+.topbar-cta:hover {
+    text-decoration: none;
+    color: #fffdf7;
+    background: var(--accent-ink);
+    transform: translateY(-1px);
+}
+
+.topbar-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    color: var(--text-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.topbar-link:hover {
+    background: var(--primary-soft);
+    color: var(--primary-ink);
+    border-color: #d0b98c;
+    text-decoration: none;
+}
+
+.topbar-clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-1);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+/* ---------- Content area ---------- */
+
+.content {
+    flex: 1;
+    padding: 28px 20px;
+}
+
+.container {
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+/* ---------- Page head ---------- */
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.page-title {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--text-1);
+}
+
+.page-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ---------- Cards — paper sheets with corner fold ---------- */
+
+.card {
+    background: var(--surface);
+    border: 1px solid #d9cbab;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    inset-inline-end: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 18px 18px 0;
+    border-color: transparent var(--bg) transparent transparent;
+    filter: drop-shadow(-2px 2px 1px rgba(82, 71, 50, 0.15));
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 20px;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--text-1);
+    background: var(--surface-2);
+    border-bottom: 2px solid var(--border);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* ---------- Tables — ruled paper ---------- */
+
+thead th {
+    background: var(--surface-2);
+    border-bottom: 2px solid #d0c5a8;
+    color: var(--text-3);
+}
+
+tbody td {
+    border-bottom: 1px dashed #d9cdb0;
+}
+
+tbody tr:hover {
+    background: #faf5e9;
+}
+
+/* ---------- Forms — ink fields ---------- */
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+    background: #fffef9;
+    border: 1px solid #d0c5a8;
+    border-radius: var(--radius-sm);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(138, 90, 43, 0.14);
+}
+
+/* ---------- Buttons — inked stamps ---------- */
+
+.btn {
+    border-radius: var(--radius-sm);
+}
+
+.btn-primary {
+    background: var(--primary);
+    box-shadow: 0 2px 6px rgba(117, 73, 31, 0.30);
+}
+
+.btn-primary:hover {
+    background: var(--primary-strong);
+}
+
+.btn-success {
+    background: var(--success);
+    box-shadow: 0 2px 6px rgba(110, 138, 78, 0.30);
+}
+
+.btn-success:hover {
+    background: var(--success-ink);
+}
+
+.btn-danger {
+    background: var(--danger);
+    box-shadow: 0 2px 6px rgba(176, 72, 58, 0.30);
+}
+
+.btn-danger:hover {
+    background: var(--danger-ink);
+}
+
+.btn-outline-secondary {
+    background: var(--surface);
+    border-color: #d0c5a8;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--surface-2);
+    border-color: #bfae87;
+}
+
+/* ---------- Search bar — lined notebook strip ---------- */
+
+.search-bar {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+}
+
+/* ---------- Stat cards — sticky notes ---------- */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 26px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid #d9cbab;
+    border-bottom: 3px solid var(--primary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-1);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.stat-card.positive {
+    border-bottom-color: var(--success);
+}
+
+.stat-card.negative {
+    border-bottom-color: var(--danger);
+}
+
+.stat-card.warning {
+    border-bottom-color: var(--warning);
+}
+
+.stat-card.absence {
+    border-bottom-color: var(--accent);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px) rotate(-0.4deg);
+    box-shadow: var(--shadow-2);
+}
+
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    font-size: 22px;
+    border-radius: var(--radius-sm);
+    background: var(--primary-soft);
+    border: 1px solid var(--border);
+}
+
+.stat-card.positive .stat-icon {
+    background: var(--success-soft);
+}
+
+.stat-card.negative .stat-icon {
+    background: var(--danger-soft);
+}
+
+.stat-card.warning .stat-icon {
+    background: var(--warning-soft);
+}
+
+.stat-card.absence .stat-icon {
+    background: var(--accent-soft);
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-1);
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+    font-size: 12.5px;
+    color: var(--text-3);
+}
+
+/* ---------- Dialogs — file folders ---------- */
+
+.dialog {
+    border: 1px solid #d9cbab;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-3);
+}
+
+.dialog-titlebar {
+    background: var(--primary-soft);
+    border-bottom: 2px solid var(--border);
+    color: var(--primary-ink);
+}
+
+.dialog-close {
+    color: var(--primary-ink);
+}
+
+.dialog-close:hover {
+    background: rgba(138, 90, 43, 0.15);
+}
+
+/* ---------- Badges — ink stamps ---------- */
+
+.score-positive,
+.score-negative,
+.status-open,
+.status-completed {
+    border-radius: var(--radius-sm);
+}
+
+.score-positive {
+    border: 1px solid #c3d1a9;
+}
+
+.score-negative {
+    border: 1px solid #e0b3ac;
+}
+
+.status-open {
+    border: 1px solid #e0cfa4;
+}
+
+.status-completed {
+    border: 1px solid #c3d1a9;
+}
+
+/* ---------- Empty states — sketch box ---------- */
+
+.empty-state {
+    background: var(--surface-2);
+    border: 2px dashed #d0c5a8;
+    border-radius: var(--radius-md);
+}
+
+/* ---------- Footer status line ---------- */
+
+.status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 11.5px;
+    color: var(--text-3);
+    background: var(--surface);
+    border-top: 2px solid #d9cbab;
+}
+
+.status-meta {
+    font-weight: 700;
+    color: var(--primary-ink);
+    background: var(--primary-soft);
+    border: 1px solid #d0b98c;
+    padding: 2px 10px;
+    border-radius: var(--radius-sm);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+    .brand-text {
+        display: none;
+    }
+
+    .topbar-inner {
+        gap: 10px;
+        padding: 6px 14px;
+    }
+
+    .topbar-cta {
+        display: none;
+    }
+
+    .nav-link {
+        padding: 8px 11px;
+    }
+}
+
+@media (max-width: 720px) {
+    .topbar-actions .topbar-link {
+        display: none;
+    }
+
+    .content {
+        padding: 18px 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .nav-link {
+        padding: 8px 10px;
+        font-size: 12.5px;
+    }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

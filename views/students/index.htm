@@ -1,0 +1,85 @@
+<div class="card">
+    <div class="card-header">
+        فهرست دانش‌آموزان
+        <a href="/students/create" class="btn btn-success btn-sm">＋ اضافه کردن دانش‌آموز</a>
+    </div>
+    <div class="card-body">
+
+        <form method="GET" action="/students/search" class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" name="q" value="{{ @search }}" placeholder="جستجو بر اساس نام، شماره دانش‌آموزی یا کلاس...">
+            <button type="submit" class="btn btn-sm btn-primary">جستجو</button>
+            <check if="{{ @search }}">
+                <a href="/students" class="btn btn-sm btn-outline-secondary">پاک کردن</a>
+            </check>
+        </form>
+
+        <check if="{{ @search }}">
+            <p class="search-result-info">
+                نتایج جستجو برای «{{ @search }}»: {{ count(@students) }} دانش‌آموز یافت شد
+            </p>
+        </check>
+
+        <check if="{{ count(@students) }}">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>شماره دانش‌آموزی</th>
+                            <th>نام</th>
+                            <th>کلاس</th>
+                            <th>پایه</th>
+                            <th>کد ملی</th>
+                            <th>نام پدر</th>
+                            <th>تلفن پدر</th>
+                            <th>تلفن مادر</th>
+                            <th>امتیاز کل</th>
+                            <th>تاریخ ثبت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@students" value="@student">
+                        <tr>
+                            <td>{{ @student.id }}</td>
+                            <td>{{ @student.student_id }}</td>
+                            <td>{{ @student.name }}</td>
+                            <td>{{ @student.class_name }}</td>
+                            <td>{{ @student.grade }}</td>
+                            <td>{{ @student.melli_code }}</td>
+                            <td>{{ @student.father_name }}</td>
+                            <td>{{ @student.father_phone }}</td>
+                            <td>{{ @student.mother_phone }}</td>
+                            <td>
+                                <check if="{{ @student.total_score > 0 }}">
+                                    <span class="score-positive">{{ @student.total_score }}</span>
+                                <false>
+                                    <check if="{{ @student.total_score < 0 }}">
+                                        <span class="score-negative">{{ @student.total_score }}</span>
+                                    <false>
+                                        <span>{{ @student.total_score }}</span>
+                                    </check>
+                                </check>
+                            </td>
+                            <td>{{ \App\Helpers\JalaliDate::format(@student.created_at) }}</td>
+                            <td>
+                                <a href="/students/{{ @student.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                                <a href="/students/{{ @student.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                            </td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        <false>
+            <p class="empty-state">
+                <check if="{{ @search }}">
+                    هیچ دانش‌آموزی مطابق جستجوی «{{ @search }}» یافت نشد.
+                <false>
+                    هیچ دانش‌آموزی ثبت نشده است.
+                </check>
+            </p>
+        </check>
+    </div>
+</div>

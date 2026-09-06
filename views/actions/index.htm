@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-header">
+        فهرست اقدامات
+        <a href="/actions/create" class="btn btn-success btn-sm">＋ ثبت اقدام جدید</a>
+    </div>
+    <div class="card-body">
+        <check if="{{ count(@actions) }}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نوع</th>
+                        <th>عنوان</th>
+                        <th>دانش‌آموز</th>
+                        <th>وضعیت</th>
+                        <th>تاریخ ثبت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <repeat group="@actions" value="@action">
+                    <tr>
+                        <td>{{ @action.id }}</td>
+                        <td>{{ @action.action_type }}</td>
+                        <td>{{ @action.title }}</td>
+                        <td>{{ @action.student_name }}</td>
+                        <td>
+                            <check if="{{ @action.status == 'open' }}">
+                                <span class="status-open">باز</span>
+                            <false>
+                                <span class="status-completed">تکمیل شده</span>
+                            </check>
+                        </td>
+                        <td>{{ \App\Helpers\JalaliDate::format(@action.created_at) }}</td>
+                        <td>
+                            <a href="/actions/{{ @action.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                            <a href="/actions/{{ @action.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                        </td>
+                    </tr>
+                    </repeat>
+                </tbody>
+            </table>
+        <false>
+            <p class="empty-state">هیچ اقدامی ثبت نشده است.</p>
+        </check>
+    </div>
+</div>

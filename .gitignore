@@ -1,0 +1,6 @@
+vendor/
+tmp/
+logs/
+*.log
+.cora/
+.env
