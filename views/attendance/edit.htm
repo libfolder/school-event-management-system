@@ -29,7 +29,7 @@
                             <repeat group="@students" value="@student">
                                 <check if="{{ @student.class_id == @class.id }}">
                                     <option value="{{ @student.id }}"
-                                        <check if="{{ (@old.student_id ?? @attendance.student_id) == @student.id }}">
+                                        <check if="{{ (@preselectedStudentId > 0 ? @preselectedStudentId : (@old.student_id ?? @attendance.student_id)) == @student.id }}">
                                             selected
                                         </check>
                                     >{{ @student.name }} - {{ @student.student_id }}</option>
@@ -67,7 +67,11 @@
         <div class="form-row">
             <div class="form-group {{ @errors.period ?? '' ? 'has-error' : '' }}">
                 <label>بازه زمانی:</label>
-                <input type="text" name="period" value="{{ @old.period ?? @attendance.period ?? '' }}" placeholder="مثل: صبح، بعد از ظهر">
+                <select name="period">
+                    <option value="">انتخاب</option>
+                    <option value="صبح" <check if="{{ (@old.period ?? @attendance.period ?? '') == 'صبح' }}">selected</check>>صبح</option>
+                    <option value="عصر" <check if="{{ (@old.period ?? @attendance.period ?? '') == 'عصر' }}">selected</check>>عصر</option>
+                </select>
                 <check if="{{ @errors.period ?? '' }}">
                     <span class="field-error">{{ @errors.period }}</span>
                 </check>

@@ -12,7 +12,7 @@ class SchoolClass extends BaseModel
                 FROM classes c
                 LEFT JOIN students s ON s.class_id = c.id
                 GROUP BY c.id, c.name, c.grade, c.teacher_name, c.created_at
-                ORDER BY c.grade ASC, c.teacher_name ASC';
+                ORDER BY c.grade ASC, c.name ASC';
         return $this->db->exec($sql);
     }
 

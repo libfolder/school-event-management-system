@@ -14,9 +14,9 @@ class Event extends BaseModel
                         CONCAT(u.first_name, " ", u.last_name) AS teacher_name
                  FROM events e
                  LEFT JOIN students s ON e.student_id = s.id
-                 LEFT JOIN event_types et ON e.event_type_id = et.id
-                 LEFT JOIN users u ON e.teacher_id = u.id
-                 ORDER BY e.event_date DESC, e.created_at DESC';
+                  LEFT JOIN event_types et ON e.event_type_id = et.id
+                  LEFT JOIN users u ON e.teacher_id = u.id
+                  ORDER BY e.created_at DESC, e.event_date DESC';
         return $this->db->exec($sql);
     }
 
@@ -116,13 +116,12 @@ class Event extends BaseModel
 
     public function topAbsentees(int $limit = 20)
     {
-        $sql = 'SELECT s.id, s.student_id, CONCAT(s.first_name, " ", s.last_name) AS name, c.name AS class_name,
-                       COUNT(e.id) AS absence_count
+        $sql = 'SELECT s.id, s.student_id, CONCAT(s.first_name, " ", s.last_name) AS name, c.id AS class_id, c.name AS class_name,
+                       COUNT(a.id) AS absence_count
                 FROM students s
                 LEFT JOIN classes c ON s.class_id = c.id
-                INNER JOIN events e ON s.id = e.student_id
-                     AND e.event_type_id = (SELECT id FROM event_types WHERE name = "غیبت روزانه" LIMIT 1)
-                GROUP BY s.id, s.student_id, s.first_name, s.last_name, c.name
+                INNER JOIN attendance a ON s.id = a.student_id AND a.status = "absent"
+                GROUP BY s.id, s.student_id, s.first_name, s.last_name, c.id, c.name
                 HAVING absence_count > 0
                 ORDER BY absence_count DESC
                 LIMIT :limit';

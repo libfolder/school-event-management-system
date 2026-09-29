@@ -7,15 +7,25 @@ class EventController extends BaseController
     public function index()
     {
         $models = $this->f3->get('models');
-        $events = $models['Event']->all();
-        foreach ($events as $index => $event) {
-            $events[$index]['row_number'] = $index + 1;
+        $allEvents = $models['Event']->all();
+        foreach ($allEvents as $index => $event) {
+            $allEvents[$index]['row_number'] = $index + 1;
         }
+
+        $page = max(1, (int)($this->f3->get('GET.page') ?? 1));
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+        $events = array_slice($allEvents, $offset, $limit);
+        $totalEvents = count($allEvents);
+        $totalPages = max(1, (int)ceil($totalEvents / $limit));
 
         $this->render('events/index.htm', [
             'title' => 'مدیریت رویدادها',
             'help' => 'لیست تمام رویدادهای ثبت‌شده برای دانش‌آموزان نمایش داده می‌شود. هر رویداد شامل نوع، امتیاز، تاریخ و معلم ثبت‌کننده است.',
             'events' => $events,
+            'page' => $page,
+            'totalPages' => $totalPages,
+            'totalEvents' => $totalEvents,
         ], 'layout.htm');
     }
 

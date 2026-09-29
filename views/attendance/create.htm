@@ -29,7 +29,7 @@
                             <option value="">انتخاب دانش‌آموز</option>
                             <repeat group="@allStudents" value="@student">
                                 <option value="{{ @student.id }}"
-                                    <check if="{{ (@old.student_id ?? 0) == @student.id }}">selected</check>
+                                    <check if="{{ (@old.student_id ?? @preselectedStudentId ?? 0) == @student.id }}">selected</check>
                                 >{{ @student.name }} - {{ @student.class_name }}</option>
                             </repeat>
                         </select>
@@ -47,9 +47,8 @@
                     <div class="form-group {{ @errors.status ?? '' ? 'has-error' : '' }}">
                         <label>وضعیت:</label>
                         <select name="status" required>
-                            <option value="">انتخاب وضعیت</option>
                             <option value="present" <check if="{{ (@old.status ?? '') == 'present' }}">selected</check>>حاضر</option>
-                            <option value="absent" <check if="{{ (@old.status ?? '') == 'absent' }}">selected</check>>غایب</option>
+                            <option value="absent" <check if="{{ (@old.status ?? 'absent') == 'absent' }}">selected</check>>غایب</option>
                             <option value="late" <check if="{{ (@old.status ?? '') == 'late' }}">selected</check>>تأخیر</option>
                             <option value="excused" <check if="{{ (@old.status ?? '') == 'excused' }}">selected</check>>استفاده از اجازه</option>
                         </select>
@@ -61,7 +60,11 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>بازه زمانی:</label>
-                        <input type="text" name="period" value="{{ @old.period ?? '' }}" placeholder="مثل: صبح، بعد از ظهر">
+                        <select name="period">
+                            <option value="">انتخاب</option>
+                            <option value="صبح" <check if="{{ (@old.period ?? '') == 'صبح' }}">selected</check>>صبح</option>
+                            <option value="عصر" <check if="{{ (@old.period ?? '') == 'عصر' }}">selected</check>>عصر</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>توضیحات:</label>
@@ -121,13 +124,17 @@
                                     <input type="hidden" name="student_id[]" value="{{ @student.id }}">
                                     <select name="status[]" required>
                                         <option value="present" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'present' }}">selected</check>>حاضر</option>
-                                        <option value="absent" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'absent' }}">selected</check>>غایب</option>
+                                        <option value="absent" <check if="{{ (@existingRecords[@student.id]['status'] ?? 'absent') == 'absent' }}">selected</check>>غایب</option>
                                         <option value="late" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'late' }}">selected</check>>تأخیر</option>
                                         <option value="excused" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'excused' }}">selected</check>>استفاده از اجازه</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" name="period[]" value="{{ @existingRecords[@student.id]['period'] ?? '' }}" placeholder="بازه زمانی">
+                                    <select name="period[]">
+                                        <option value="">انتخاب</option>
+                                        <option value="صبح" <check if="{{ (@existingRecords[@student.id]['period'] ?? '') == 'صبح' }}">selected</check>>صبح</option>
+                                        <option value="عصر" <check if="{{ (@existingRecords[@student.id]['period'] ?? '') == 'عصر' }}">selected</check>>عصر</option>
+                                    </select>
                                 </td>
                                 <td>
                                     <input type="text" name="notes[]" value="{{ @existingRecords[@student.id]['notes'] ?? '' }}" placeholder="توضیحات">

@@ -3,7 +3,11 @@
     <aside class="student-profile-sidebar">
         <div class="card">
             <div class="card-header">
-                مشخصات دانش‌آموز
+                <div>
+                    <div>مشخصات دانش‌آموز</div>
+                    <div style="font-size:12px;color:var(--text-3);font-weight:normal;margin-top:4px;">{{ @student.name }} - {{ @student.class_name }}</div>
+                </div>
+                <a href="/students/{{ @student.id }}/edit" class="btn btn-primary btn-sm">✏️ ویرایش</a>
             </div>
             <div class="card-body">
                 <div class="profile-info">
@@ -62,7 +66,11 @@
         <div class="card">
             <div class="card-header">
                 رویدادهای دانش‌آموز
-                <a href="/events/create?student_id={{ @student.id }}" class="btn btn-success btn-sm">＋ ثبت رویداد جدید</a>
+                <div style="display:inline-flex;gap:8px;margin-right:auto;">
+                    <a href="/events/create?student_id={{ @student.id }}" class="btn btn-success btn-sm">＋ ثبت رویداد جدید</a>
+                    <a href="/attendance/create?student_id={{ @student.id }}" class="btn btn-danger btn-sm">🚫 ثبت غایب</a>
+                    <a href="/actions/create?student_id={{ @student.id }}" class="btn btn-sm" style="background:#6d4c41;color:#fff;border-color:#5d4037;">🗂️ اقدام</a>
+                </div>
             </div>
             <div class="card-body">
                 <check if="{{ count(@events) }}">

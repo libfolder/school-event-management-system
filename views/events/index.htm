@@ -34,12 +34,22 @@
                         <td>{{ @event.teacher_name }}</td>
                         <td>
                             <a href="/events/{{ @event.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                            <a href="/actions/create?event_id={{ @event.id }}&student_id={{ @event.student_id }}" class="btn btn-sm btn-success">اقدام</a>
                             <a href="/events/{{ @event.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
                         </td>
                     </tr>
                     </repeat>
                 </tbody>
             </table>
+            <div class="pagination">
+                <check if="{{ @page > 1 }}">
+                    <a href="/events?page={{ @page - 1 }}" class="page-link page-prev">قبلی</a>
+                </check>
+                <span class="page-link" style="background:var(--surface);cursor:default;">صفحه {{ @page }} از {{ @totalPages }}</span>
+                <check if="{{ @page < @totalPages }}">
+                    <a href="/events?page={{ @page + 1 }}" class="page-link page-next">بعدی</a>
+                </check>
+            </div>
         <false>
             <p class="empty-state">هیچ رویدادی ثبت نشده است.</p>
         </check>

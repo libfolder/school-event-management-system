@@ -31,18 +31,19 @@ class Attendance extends BaseModel
 
         $sql = 'SELECT a.*,
                        CONCAT(s.first_name, " ", s.last_name) AS student_name,
+                       s.id AS student_pk,
                        s.student_id,
                        s.photo,
                        c.name AS class_name,
                        c.grade,
                        c.teacher_name,
                        CONCAT(u.first_name, " ", u.last_name) AS recorded_by_name
-                FROM attendance a
-                INNER JOIN students s ON a.student_id = s.id
-                LEFT JOIN classes c ON s.class_id = c.id
-                LEFT JOIN users u ON a.recorded_by = u.id
-                ' . $where . '
-                ORDER BY a.attendance_date DESC, s.last_name ASC, s.first_name ASC';
+                 FROM attendance a
+                 INNER JOIN students s ON a.student_id = s.id
+                 LEFT JOIN classes c ON s.class_id = c.id
+                 LEFT JOIN users u ON a.recorded_by = u.id
+                 ' . $where . '
+                 ORDER BY a.attendance_date DESC, s.last_name ASC, s.first_name ASC';
 
         return $this->db->exec($sql, $params);
     }
@@ -56,12 +57,13 @@ class Attendance extends BaseModel
 
         $sql = 'SELECT a.*,
                        CONCAT(s.first_name, " ", s.last_name) AS student_name,
+                       s.id AS student_pk,
                        s.student_id,
                        s.photo
-                FROM attendance a
-                INNER JOIN students s ON a.student_id = s.id
-                WHERE a.attendance_date = :date AND s.class_id = :class_id
-                ORDER BY s.last_name ASC, s.first_name ASC';
+                 FROM attendance a
+                 INNER JOIN students s ON a.student_id = s.id
+                 WHERE a.attendance_date = :date AND s.class_id = :class_id
+                 ORDER BY s.last_name ASC, s.first_name ASC';
 
         return $this->db->exec($sql, ['date' => $mysqlDate, 'class_id' => $classId]);
     }
@@ -70,14 +72,15 @@ class Attendance extends BaseModel
     {
         $sql = 'SELECT a.*,
                        CONCAT(s.first_name, " ", s.last_name) AS student_name,
+                       s.id AS student_pk,
                        s.student_id,
                        c.name AS class_name,
                        CONCAT(u.first_name, " ", u.last_name) AS recorded_by_name
-                FROM attendance a
-                INNER JOIN students s ON a.student_id = s.id
-                LEFT JOIN classes c ON s.class_id = c.id
-                LEFT JOIN users u ON a.recorded_by = u.id
-                WHERE a.id = :id';
+                 FROM attendance a
+                 INNER JOIN students s ON a.student_id = s.id
+                 LEFT JOIN classes c ON s.class_id = c.id
+                 LEFT JOIN users u ON a.recorded_by = u.id
+                 WHERE a.id = :id';
 
         $result = $this->db->exec($sql, ['id' => $id]);
         return $result[0] ?? null;
@@ -126,6 +129,32 @@ class Attendance extends BaseModel
         $mapper = $this->mapper($this->table);
         $mapper->load(['id = ?', $id]);
         return $mapper->erase();
+    }
+
+    public function getRecentAbsences(int $limit = 20, int $offset = 0): array
+    {
+        $sql = 'SELECT a.id, a.attendance_date, a.period, a.notes,
+                       CONCAT(s.first_name, " ", s.last_name) AS student_name,
+                       s.id AS student_pk,
+                       s.student_id,
+                       c.name AS class_name,
+                       CONCAT(u.first_name, " ", u.last_name) AS recorded_by_name
+                FROM attendance a
+                INNER JOIN students s ON a.student_id = s.id
+                LEFT JOIN classes c ON s.class_id = c.id
+                LEFT JOIN users u ON a.recorded_by = u.id
+                WHERE a.status = "absent"
+                ORDER BY a.attendance_date DESC, a.id DESC
+                LIMIT :limit OFFSET :offset';
+
+        return $this->db->exec($sql, ['limit' => $limit, 'offset' => $offset]);
+    }
+
+    public function countAbsences(): int
+    {
+        $sql = 'SELECT COUNT(*) AS c FROM attendance WHERE status = "absent"';
+        $result = $this->db->exec($sql);
+        return (int)($result[0]['c'] ?? 0);
     }
 
     public function getStats(?string $classId = null, ?string $dateFrom = null, ?string $dateTo = null): array

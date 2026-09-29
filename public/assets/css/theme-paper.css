@@ -553,22 +553,29 @@ textarea:focus {
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 26px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .stat-card {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 18px;
+    gap: 10px;
+    padding: 12px;
     background: var(--surface);
     border: 1px solid #d9cbab;
     border-bottom: 3px solid var(--primary);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-1);
     transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.reports-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .stat-card.positive {
@@ -596,10 +603,10 @@ textarea:focus {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 46px;
-    height: 46px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
-    font-size: 22px;
+    font-size: 18px;
     border-radius: var(--radius-sm);
     background: var(--primary-soft);
     border: 1px solid var(--border);
@@ -622,7 +629,7 @@ textarea:focus {
 }
 
 .stat-value {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 800;
     line-height: 1.2;
     color: var(--text-1);
@@ -630,7 +637,7 @@ textarea:focus {
 }
 
 .stat-label {
-    font-size: 12.5px;
+    font-size: 11px;
     color: var(--text-3);
 }
 
@@ -745,16 +752,21 @@ textarea:focus {
     }
 
     .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 8px;
     }
 
     .stat-card {
-        padding: 14px;
+        padding: 10px;
     }
 
     .stat-value {
-        font-size: 22px;
+        font-size: 18px;
+    }
+
+    .reports-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .nav-link {

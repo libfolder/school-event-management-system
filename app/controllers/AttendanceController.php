@@ -14,9 +14,32 @@ class AttendanceController extends BaseController
         $status = $this->f3->get('GET.status') ?? '';
 
         $attendances = $models['Attendance']->allWithFilters($classId, $date, $status);
+        foreach ($attendances as $index => $attendance) {
+            $attendances[$index]['row_number'] = $index + 1;
+        }
         $classes = $classModel->all();
 
         $stats = $models['Attendance']->getStats($classId ?: null, $date ?: null, null);
+
+        $page = max(1, (int)($this->f3->get('GET.page') ?? 1));
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+        $allFilteredAttendances = $attendances;
+        $attendances = array_slice($allFilteredAttendances, $offset, $limit);
+        $totalAttendances = count($allFilteredAttendances);
+        $totalPages = max(1, (int)ceil($totalAttendances / $limit));
+
+        $absencePage = max(1, (int)($this->f3->get('GET.absence_page') ?? 1));
+        $absenceLimit = 20;
+        $absenceOffset = ($absencePage - 1) * $absenceLimit;
+
+        $recentAbsences = $models['Attendance']->getRecentAbsences($absenceLimit, $absenceOffset);
+        $totalAbsences = $models['Attendance']->countAbsences();
+        $totalAbsencePages = max(1, (int)ceil($totalAbsences / $absenceLimit));
+
+        foreach ($recentAbsences as $index => $absence) {
+            $recentAbsences[$index]['row_number'] = $absenceOffset + $index + 1;
+        }
 
         $this->render('attendance/index.htm', [
             'title' => 'مدیریت حضور و غیاب',
@@ -27,6 +50,13 @@ class AttendanceController extends BaseController
             'date' => $date,
             'status' => $status,
             'stats' => $stats,
+            'page' => $page,
+            'totalPages' => $totalPages,
+            'totalAttendances' => $totalAttendances,
+            'recentAbsences' => $recentAbsences,
+            'absencePage' => $absencePage,
+            'totalAbsencePages' => $totalAbsencePages,
+            'totalAbsences' => $totalAbsences,
         ], 'layout.htm');
     }
 
@@ -37,7 +67,8 @@ class AttendanceController extends BaseController
         $allStudents = $models['Student']->allWithClass();
 
         $selectedClassId = (int)($this->f3->get('GET.class_id') ?? 0);
-        $selectedDate = $this->f3->get('GET.date') ?? '';
+        $selectedDate = $this->f3->get('GET.date') ?? \App\Helpers\JalaliDate::today();
+        $preselectedStudentId = (int)($this->f3->get('GET.student_id') ?? 0);
 
         $students = [];
         $existingRecords = [];
@@ -62,6 +93,7 @@ class AttendanceController extends BaseController
             'allStudents' => $allStudents,
             'selectedClassId' => $selectedClassId,
             'selectedDate' => $selectedDate,
+            'preselectedStudentId' => $preselectedStudentId,
             'students' => $students,
             'existingRecords' => $existingRecords,
         ], 'layout.htm');
@@ -227,6 +259,7 @@ class AttendanceController extends BaseController
         }
 
         $classes = $models['Class']->all();
+        $preselectedStudentId = (int)($this->f3->get('GET.student_id') ?? 0);
 
         $this->render('attendance/edit.htm', [
             'title' => 'ویرایش حضور و غیاب',
@@ -236,6 +269,7 @@ class AttendanceController extends BaseController
             'classes' => $classes,
             'students' => $models['Student']->allWithClass(),
             'attendance' => $attendance,
+            'preselectedStudentId' => $preselectedStudentId,
         ], 'layout.htm');
     }
 

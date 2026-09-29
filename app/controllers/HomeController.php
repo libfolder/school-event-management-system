@@ -31,6 +31,7 @@ class HomeController extends BaseController
         $openRecords = $actionModel->getOpenRecords();
         foreach ($openRecords as $index => $record) {
             $openRecords[$index]['row_number'] = $index + 1;
+            $openRecords[$index]['action_type_label'] = \App\Models\Action::getActionTypeLabel($record['action_type']);
         }
         $followUpStudents = $actionModel->getStudentsWithFollowUp();
 

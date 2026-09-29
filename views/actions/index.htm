@@ -21,9 +21,9 @@
                     <repeat group="@actions" value="@action">
                     <tr>
                         <td>{{ @action.row_number }}</td>
-                        <td>{{ @action.action_type }}</td>
+                        <td>{{ @action.action_type_label }}</td>
                         <td>{{ @action.title }}</td>
-                        <td>{{ @action.student_name }}</td>
+                        <td><a href="/students/{{ @action.student_pk }}">{{ @action.student_name }}</a></td>
                         <td>
                             <check if="{{ @action.status == 'open' }}">
                                 <span class="status-open">باز</span>

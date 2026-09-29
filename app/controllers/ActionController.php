@@ -10,6 +10,7 @@ class ActionController extends BaseController
         $actions = $models['Action']->all();
         foreach ($actions as $index => $action) {
             $actions[$index]['row_number'] = $index + 1;
+            $actions[$index]['action_type_label'] = \App\Models\Action::getActionTypeLabel($action['action_type']);
         }
 
         $this->render('actions/index.htm', [

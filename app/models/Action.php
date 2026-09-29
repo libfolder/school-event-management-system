@@ -8,7 +8,7 @@ class Action extends BaseModel
 
     public function all()
     {
-        $sql = 'SELECT a.*, CONCAT(s.first_name, " ", s.last_name) AS student_name, et.name AS event_type_name,
+        $sql = 'SELECT a.*, CONCAT(s.first_name, " ", s.last_name) AS student_name, s.id AS student_pk, et.name AS event_type_name,
                         CONCAT(u.first_name, " ", u.last_name) AS created_by_name
                  FROM actions a
                  LEFT JOIN students s ON a.student_id = s.id
@@ -39,7 +39,6 @@ class Action extends BaseModel
                 LEFT JOIN events e ON a.event_id = e.id
                 LEFT JOIN event_types et ON e.event_type_id = et.id
                 WHERE a.status = "open"
-                  AND a.action_type IN ("parent_meeting", "mentor_referral")
                 ORDER BY a.created_at ASC';
         return $this->db->exec($sql);
     }
@@ -142,5 +141,20 @@ class Action extends BaseModel
                 ORDER BY a.status ASC, a.created_at DESC
                 LIMIT :limit';
         return $this->db->exec($sql, ['class_id' => $classId, 'limit' => $limit]);
+    }
+
+    public static function getActionTypeLabel(string $type): string
+    {
+        $labels = [
+            'reward' => 'تشویق و پاداش',
+            'honor_board' => 'بورد افتخار راهرو',
+            'student_of_week' => 'معرفی در صف (دانش‌آموز هفته)',
+            'prize' => 'اهدای جایزه',
+            'teacher_referral' => 'ارجاع به معلم مربوطه',
+            'parent_meeting' => 'احضار والدین',
+            'mentor_referral' => 'معرفی به مشاور',
+        ];
+
+        return $labels[$type] ?? $type;
     }
 }

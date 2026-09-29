@@ -44,35 +44,35 @@
 
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-icon icon-class">🎓</div>
+        <a href="/classes" class="stat-icon icon-class">🎓</a>
         <div class="stat-info">
             <div class="stat-value">{{ count(@classes) }}</div>
             <div class="stat-label">کلاس</div>
         </div>
     </div>
     <div class="stat-card positive">
-        <div class="stat-icon icon-positive">⭐</div>
+        <a href="/events" class="stat-icon icon-positive">⭐</a>
         <div class="stat-info">
             <div class="stat-value">{{ count(@positiveScoreStudents) }}</div>
             <div class="stat-label">دانش‌آموز با امتیاز مثبت</div>
         </div>
     </div>
     <div class="stat-card negative">
-        <div class="stat-icon icon-negative">⚠️</div>
+        <a href="/events" class="stat-icon icon-negative">⚠️</a>
         <div class="stat-info">
             <div class="stat-value">{{ count(@negativeScoreStudents) }}</div>
             <div class="stat-label">دانش‌آموز با امتیاز منفی</div>
         </div>
     </div>
     <div class="stat-card warning">
-        <div class="stat-icon icon-open">📋</div>
+        <a href="/actions" class="stat-icon icon-open">📋</a>
         <div class="stat-info">
             <div class="stat-value">{{ count(@openRecords) }}</div>
             <div class="stat-label">رکورد باز</div>
         </div>
     </div>
     <div class="stat-card absence">
-        <div class="stat-icon icon-absence">🕐</div>
+        <a href="/attendance" class="stat-icon icon-absence">🕐</a>
         <div class="stat-info">
             <div class="stat-value">{{ count(@topAbsentees) }}</div>
             <div class="stat-label">دانش‌آموز غیبت‌کننده</div>
@@ -100,15 +100,7 @@
                     <repeat group="@openRecords" value="@record">
                     <tr>
                         <td>{{ @record.row_number }}</td>
-                        <td>
-                            <check if="{{ @record.action_type == 'parent_meeting' }}">
-                                <span class="status-open">احضار والدین</span>
-                            <false>
-                                <check if="{{ @record.action_type == 'mentor_referral' }}">
-                                    <span class="status-open">معرفی به مشاور</span>
-                                </check>
-                            </check>
-                        </td>
+                        <td>{{ @record.action_type_label }}</td>
                         <td>{{ @record.title }}</td>
                         <td><a href="/students/{{ @record.student_id }}">{{ @record.student_name }}</a></td>
                         <td>
@@ -173,7 +165,12 @@
 </div>
 
 <div class="card card-positive">
-    <div class="card-header">دانش‌آموزان با امتیاز مثبت (برتری)</div>
+    <div class="card-header">
+    <div>
+        <div>دانش‌آموزان با امتیاز مثبت (برتری)</div>
+        <div style="font-size:12px;color:var(--text-3);font-weight:normal;margin-top:4px;">بر اساس مجموع امتیازات مثبت رویدادها، محدود به ۲۰ نفر بالاترین نمره</div>
+    </div>
+</div>
     <div class="card-body">
         <check if="{{ count(@positiveScoreStudents) }}">
             <table>
@@ -211,7 +208,12 @@
 </div>
 
 <div class="card card-negative">
-    <div class="card-header">دانش‌آموزان با امتیاز منفی (نیاز به توجه)</div>
+    <div class="card-header">
+    <div>
+        <div>دانش‌آموزان با امتیاز منفی (نیاز به توجه)</div>
+        <div style="font-size:12px;color:var(--text-3);font-weight:normal;margin-top:4px;">بر اساس مجموع امتیازات منفی رویدادها، محدود به ۲۰ نفر با بیشترین نیاز به توجه</div>
+    </div>
+</div>
     <div class="card-body">
         <check if="{{ count(@negativeScoreStudents) }}">
             <table>
@@ -250,7 +252,12 @@
 </div>
 
 <div class="card card-absence">
-    <div class="card-header">۲۰ دانش‌آموز با بیشترین غیبت</div>
+    <div class="card-header">
+    <div>
+        <div>۲۰ دانش‌آموز با بیشترین غیبت</div>
+        <div style="font-size:12px;color:var(--text-3);font-weight:normal;margin-top:4px;">بر اساس تعداد رکوردهای غیبت ثبت‌شده، محدود به ۲۰ نفر با بیشترین تعداد غیبت</div>
+    </div>
+</div>
     <div class="card-body">
         <check if="{{ count(@topAbsentees) }}">
             <table>
@@ -270,7 +277,7 @@
                         <td>{{ @student.student_id }}</td>
                         <td><a href="/students/{{ @student.id }}">{{ @student.name }}</a></td>
                         <td>{{ @student.class_name }}</td>
-                        <td><span class="score-negative">{{ @student.absence_count }}</span></td>
+                        <td><a href="/attendance?class_id={{ @student.class_id }}"><span class="score-negative">{{ @student.absence_count }}</span></a></td>
                     </tr>
                     </repeat>
                 </tbody>

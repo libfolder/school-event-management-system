@@ -379,6 +379,7 @@ select:focus,
 textarea:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+    outline: none;
 }
 
 .has-error input,
