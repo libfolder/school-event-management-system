@@ -8,23 +8,23 @@
             <table>
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ردیف</th>
                         <th>نام کلاس</th>
                         <th>پایه</th>
-                        <th>بخش</th>
+                        <th>نام معلم</th>
                         <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
                     <repeat group="@classes" value="@cls">
                     <tr>
-                        <td>{{ @cls.id }}</td>
+                        <td>{{ @cls.row_number }}</td>
                         <td>
                             <a href="/classes/{{ @cls.id }}/students" title="نمایش دانش‌آموزان این کلاس">{{ @cls.name }}</a>
                             <span class="class-student-count">({{ @cls.student_count }} دانش‌آموز)</span>
                         </td>
                         <td>{{ @cls.grade }}</td>
-                        <td>{{ @cls.section }}</td>
+                        <td>{{ @cls.teacher_name ?: '-' }}</td>
                         <td>
                             <a href="/classes/{{ @cls.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
                             <a href="/classes/{{ @cls.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>

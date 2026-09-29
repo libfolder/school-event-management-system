@@ -16,7 +16,7 @@ class Student extends BaseModel
         return $this->db->exec($sql);
     }
 
-    public function allWithClass(?string $search = null)
+    public function allWithClass(?string $search = null, ?int $limit = null, ?int $offset = null)
     {
         $params = [];
         $where = '';
@@ -40,7 +40,36 @@ class Student extends BaseModel
                 ' . $where . '
                 GROUP BY s.id, s.student_id, s.name, s.class_id, s.created_at, c.name
                 ORDER BY s.name ASC';
+        if ($limit !== null) {
+            $sql .= ' LIMIT ' . (int)$limit;
+            if ($offset !== null) {
+                $sql .= ' OFFSET ' . (int)$offset;
+            }
+        }
         return $this->db->exec($sql, $params);
+    }
+
+    public function countWithClass(?string $search = null): int
+    {
+        $params = [];
+        $where = '';
+
+        if ($search !== null && $search !== '') {
+            $where = 'WHERE s.name LIKE :search OR s.student_id LIKE :search OR c.name LIKE :search';
+            $params['search'] = '%' . $search . '%';
+        }
+
+        $sql = 'SELECT COUNT(DISTINCT s.id) AS total
+                FROM (
+                    SELECT id, student_id,
+                           CONCAT(first_name, " ", last_name) AS name,
+                           class_id
+                    FROM students
+                ) s
+                LEFT JOIN classes c ON s.class_id = c.id
+                ' . $where;
+        $result = $this->db->exec($sql, $params);
+        return (int)($result[0]['total'] ?? 0);
     }
 
     public function search(string $term)
@@ -79,7 +108,7 @@ class Student extends BaseModel
     public function getClasses()
     {
         $mapper = $this->mapper('classes');
-        return $mapper->select('*', null, 'ORDER BY grade ASC, section ASC');
+        return $mapper->select('*', null, 'ORDER BY grade ASC, teacher_name ASC');
     }
 
     public function create(array $data)
@@ -111,14 +140,14 @@ class Student extends BaseModel
         $mapper->student_id = $data['student_id'];
         $mapper->first_name = $data['first_name'];
         $mapper->last_name = $data['last_name'];
-        $mapper->melli_code = $data['melli_code'] !== '' ? $data['melli_code'] : null;
-        $mapper->father_name = $data['father_name'] !== '' ? $data['father_name'] : null;
-        $mapper->mother_name = $data['mother_name'] !== '' ? $data['mother_name'] : null;
-        $mapper->grade = $data['grade'] !== '' ? $data['grade'] : null;
-        $mapper->mother_phone = $data['mother_phone'] !== '' ? $data['mother_phone'] : null;
-        $mapper->father_phone = $data['father_phone'] !== '' ? $data['father_phone'] : null;
-        $mapper->address = $data['address'] !== '' ? $data['address'] : null;
-        $mapper->photo = $data['photo'] !== '' ? $data['photo'] : null;
+        $mapper->melli_code = ($data['melli_code'] ?? '') !== '' ? $data['melli_code'] : null;
+        $mapper->father_name = ($data['father_name'] ?? '') !== '' ? $data['father_name'] : null;
+        $mapper->mother_name = ($data['mother_name'] ?? '') !== '' ? $data['mother_name'] : null;
+        $mapper->grade = ($data['grade'] ?? '') !== '' ? $data['grade'] : null;
+        $mapper->mother_phone = ($data['mother_phone'] ?? '') !== '' ? $data['mother_phone'] : null;
+        $mapper->father_phone = ($data['father_phone'] ?? '') !== '' ? $data['father_phone'] : null;
+        $mapper->address = ($data['address'] ?? '') !== '' ? $data['address'] : null;
+        $mapper->photo = ($data['photo'] ?? '') !== '' ? $data['photo'] : null;
         $mapper->class_id = $data['class_id'];
     }
 

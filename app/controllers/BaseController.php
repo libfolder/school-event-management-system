@@ -19,13 +19,14 @@ abstract class BaseController
             'EventType' => new \App\Models\EventType(),
             'Event'     => new \App\Models\Event(),
             'Action'    => new \App\Models\Action(),
+            'Attendance' => new \App\Models\Attendance(),
         ]);
     }
 
     protected function render(string $view, array $data = [], ?string $layout = null): void
     {
-        // Always provide errors/old so templates can safely reference them
-        $data += ['errors' => [], 'old' => []];
+        // Always provide errors/old/help so templates can safely reference them
+        $data += ['errors' => [], 'old' => [], 'help' => ''];
 
         foreach ($data as $key => $value) {
             $this->f3->set($key, $value);

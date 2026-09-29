@@ -9,31 +9,31 @@ class Action extends BaseModel
     public function all()
     {
         $sql = 'SELECT a.*, CONCAT(s.first_name, " ", s.last_name) AS student_name, et.name AS event_type_name,
-                       u.name AS created_by_name
-                FROM actions a
-                LEFT JOIN students s ON a.student_id = s.id
-                LEFT JOIN events e ON a.event_id = e.id
-                LEFT JOIN event_types et ON e.event_type_id = et.id
-                LEFT JOIN users u ON a.created_by = u.id
-                ORDER BY a.created_at DESC';
+                        CONCAT(u.first_name, " ", u.last_name) AS created_by_name
+                 FROM actions a
+                 LEFT JOIN students s ON a.student_id = s.id
+                 LEFT JOIN events e ON a.event_id = e.id
+                 LEFT JOIN event_types et ON e.event_type_id = et.id
+                 LEFT JOIN users u ON a.created_by = u.id
+                 ORDER BY a.created_at DESC';
         return $this->db->exec($sql);
     }
 
     public function find(int $id)
     {
         $sql = 'SELECT a.*, CONCAT(s.first_name, " ", s.last_name) AS student_name, s.student_id,
-                       u.name AS created_by_name
-                FROM actions a
-                LEFT JOIN students s ON a.student_id = s.id
-                LEFT JOIN users u ON a.created_by = u.id
-                WHERE a.id = :id';
+                        CONCAT(u.first_name, " ", u.last_name) AS created_by_name
+                 FROM actions a
+                 LEFT JOIN students s ON a.student_id = s.id
+                 LEFT JOIN users u ON a.created_by = u.id
+                 WHERE a.id = :id';
         $result = $this->db->exec($sql, ['id' => $id]);
         return $result[0] ?? null;
     }
 
     public function getOpenRecords()
     {
-        $sql = 'SELECT a.*, CONCAT(s.first_name, " ", s.last_name) AS student_name, e.score, et.is_positive
+        $sql = 'SELECT a.*, s.id AS student_id, CONCAT(s.first_name, " ", s.last_name) AS student_name, e.score, et.is_positive
                 FROM actions a
                 LEFT JOIN students s ON a.student_id = s.id
                 LEFT JOIN events e ON a.event_id = e.id

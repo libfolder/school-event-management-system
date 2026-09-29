@@ -19,7 +19,7 @@
                 <tbody>
                     <repeat group="@eventTypes" value="@type">
                     <tr>
-                        <td>{{ @type.id }}</td>
+                        <td>{{ @type.row_number }}</td>
                         <td>{{ @type.name }}</td>
                         <td>
                             <check if="{{ @type.is_positive }}">

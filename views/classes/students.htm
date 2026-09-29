@@ -3,7 +3,7 @@
         <div class="card-header">
             <span>
                 👥 دانش‌آموزان کلاس «{{ @class.name }}»
-                (پایه {{ @class.grade }} - بخش {{ @class.section }} - {{ @class.student_count }} دانش‌آموز)
+                (پایه {{ @class.grade }} - معلم: {{ @class.teacher_name ?: 'تعیین نشده' }} - {{ @class.student_count }} دانش‌آموز)
             </span>
             <a href="/classes" class="btn btn-outline-secondary btn-sm">← بازگشت به کلاس‌ها</a>
         </div>
@@ -13,7 +13,7 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>ردیف</th>
                                 <th>شماره دانش‌آموزی</th>
                                 <th>نام</th>
                                 <th>پایه</th>
@@ -22,16 +22,15 @@
                                 <th>تلفن پدر</th>
                                 <th>تلفن مادر</th>
                                 <th>امتیاز کل</th>
-                                <th>تاریخ ثبت</th>
                                 <th>عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
                             <repeat group="@students" value="@student">
                             <tr>
-                                <td>{{ @student.id }}</td>
+                                <td>{{ @student.row_number }}</td>
                                 <td>{{ @student.student_id }}</td>
-                                <td>{{ @student.name }}</td>
+                                <td><a href="/students/{{ @student.id }}">{{ @student.name }}</a></td>
                                 <td>{{ @student.grade }}</td>
                                 <td>{{ @student.melli_code }}</td>
                                 <td>{{ @student.father_name }}</td>
@@ -48,7 +47,6 @@
                                         </check>
                                     </check>
                                 </td>
-                                <td>{{ \App\Helpers\JalaliDate::format(@student.created_at) }}</td>
                                 <td>
                                     <a href="/students/{{ @student.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
                                     <a href="/students/{{ @student.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>

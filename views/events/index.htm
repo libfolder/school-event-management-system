@@ -20,9 +20,9 @@
                 <tbody>
                     <repeat group="@events" value="@event">
                     <tr>
-                        <td>{{ @event.id }}</td>
+                        <td>{{ @event.row_number }}</td>
                         <td>{{ \App\Helpers\JalaliDate::format(@event.event_date) }}</td>
-                        <td>{{ @event.student_name }}</td>
+                        <td><a href="/students/{{ @event.student_id }}">{{ @event.student_name }}</a></td>
                         <td>{{ @event.event_type_name }}</td>
                         <td>
                             <check if="{{ @event.score > 0 }}">

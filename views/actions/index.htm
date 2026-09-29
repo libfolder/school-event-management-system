@@ -20,7 +20,7 @@
                 <tbody>
                     <repeat group="@actions" value="@action">
                     <tr>
-                        <td>{{ @action.id }}</td>
+                        <td>{{ @action.row_number }}</td>
                         <td>{{ @action.action_type }}</td>
                         <td>{{ @action.title }}</td>
                         <td>{{ @action.student_name }}</td>
@@ -33,7 +33,7 @@
                         </td>
                         <td>{{ \App\Helpers\JalaliDate::format(@action.created_at) }}</td>
                         <td>
-                            <a href="/actions/{{ @action.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                            <a href="/actions/{{ @action.id }}/edit?student_id={{ @action.student_id }}" class="btn btn-sm btn-primary">ویرایش</a>
                             <a href="/actions/{{ @action.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
                         </td>
                     </tr>

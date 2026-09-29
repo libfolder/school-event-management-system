@@ -8,7 +8,7 @@ class EventType extends BaseModel
 
     public function all()
     {
-        $sql = 'SELECT * FROM event_types ORDER BY is_positive DESC, default_score DESC';
+        $sql = 'SELECT * FROM event_types ORDER BY is_positive ASC, default_score ASC';
         return $this->db->exec($sql);
     }
 

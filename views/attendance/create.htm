@@ -1,0 +1,157 @@
+<check if="{{ @errors }}">
+    <div class="alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-body">
+            <div class="alert-title">خطا در ثبت اطلاعات</div>
+            <ul class="alert-list">
+                <repeat group="@errors" key="@field" value="@message">
+                    <li>{{ @message }}</li>
+                </repeat>
+            </ul>
+        </div>
+        <button type="button" class="alert-close" onclick="this.closest('.alert').remove()">×</button>
+    </div>
+</check>
+
+<div class="card">
+    <div class="card-header">
+        ثبت حضور و غیاب
+    </div>
+    <div class="card-body">
+
+        <div class="quick-add-section">
+            <h3 class="section-subtitle">ثبت سریع برای یک دانش‌آموز</h3>
+            <form method="POST" action="/attendance/store" class="quick-add-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group {{ @errors.student_id ?? '' ? 'has-error' : '' }}">
+                        <label>دانش‌آموز:</label>
+                        <select name="student_id" required>
+                            <option value="">انتخاب دانش‌آموز</option>
+                            <repeat group="@allStudents" value="@student">
+                                <option value="{{ @student.id }}"
+                                    <check if="{{ (@old.student_id ?? 0) == @student.id }}">selected</check>
+                                >{{ @student.name }} - {{ @student.class_name }}</option>
+                            </repeat>
+                        </select>
+                        <check if="{{ @errors.student_id ?? '' }}">
+                            <span class="field-error">{{ @errors.student_id }}</span>
+                        </check>
+                    </div>
+                    <div class="form-group {{ @errors.attendance_date ?? '' ? 'has-error' : '' }}">
+                        <label>تاریخ:</label>
+                        <input type="text" name="attendance_date" value="{{ @old.attendance_date ?? @selectedDate }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input" required>
+                        <check if="{{ @errors.attendance_date ?? '' }}">
+                            <span class="field-error">{{ @errors.attendance_date }}</span>
+                        </check>
+                    </div>
+                    <div class="form-group {{ @errors.status ?? '' ? 'has-error' : '' }}">
+                        <label>وضعیت:</label>
+                        <select name="status" required>
+                            <option value="">انتخاب وضعیت</option>
+                            <option value="present" <check if="{{ (@old.status ?? '') == 'present' }}">selected</check>>حاضر</option>
+                            <option value="absent" <check if="{{ (@old.status ?? '') == 'absent' }}">selected</check>>غایب</option>
+                            <option value="late" <check if="{{ (@old.status ?? '') == 'late' }}">selected</check>>تأخیر</option>
+                            <option value="excused" <check if="{{ (@old.status ?? '') == 'excused' }}">selected</check>>استفاده از اجازه</option>
+                        </select>
+                        <check if="{{ @errors.status ?? '' }}">
+                            <span class="field-error">{{ @errors.status }}</span>
+                        </check>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>بازه زمانی:</label>
+                        <input type="text" name="period" value="{{ @old.period ?? '' }}" placeholder="مثل: صبح، بعد از ظهر">
+                    </div>
+                    <div class="form-group">
+                        <label>توضیحات:</label>
+                        <input type="text" name="notes" value="{{ @old.notes ?? '' }}" placeholder="توضیحات اختیاری">
+                    </div>
+                </div>
+                <div class="dialog-buttons">
+                    <button type="submit" class="btn btn-success">ثبت</button>
+                </div>
+            </form>
+        </div>
+
+        <hr class="section-divider">
+
+        <form method="GET" action="/attendance/create" class="filter-bar" style="margin-bottom:16px;">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label>کلاس:</label>
+                    <select name="class_id" onchange="this.form.submit()">
+                        <option value="">انتخاب کلاس</option>
+                        <repeat group="@classes" value="@class">
+                            <option value="{{ @class.id }}" <check if="{{ @selectedClassId == @class.id }}">selected</check>>{{ @class.name }} (پایه {{ @class.grade }})</option>
+                        </repeat>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>تاریخ:</label>
+                    <input type="text" name="date" value="{{ @selectedDate }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input" onchange="this.form.submit()">
+                </div>
+            </div>
+        </form>
+
+        <check if="{{ @selectedClassId > 0 && @selectedDate != '' }}">
+            <form method="POST" action="/attendance/store" novalidate>
+                <input type="hidden" name="class_id" value="{{ @selectedClassId }}">
+                <input type="hidden" name="attendance_date" value="{{ @selectedDate }}">
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>شماره دانش‌آموزی</th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>وضعیت</th>
+                                <th>بازه</th>
+                                <th>توضیحات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <repeat group="@students" value="@student" key="@idx">
+                            <tr>
+                                <td>{{ @idx + 1 }}</td>
+                                <td>{{ @student.student_id }}</td>
+                                <td>{{ @student.name }}</td>
+                                <td>
+                                    <input type="hidden" name="student_id[]" value="{{ @student.id }}">
+                                    <select name="status[]" required>
+                                        <option value="present" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'present' }}">selected</check>>حاضر</option>
+                                        <option value="absent" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'absent' }}">selected</check>>غایب</option>
+                                        <option value="late" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'late' }}">selected</check>>تأخیر</option>
+                                        <option value="excused" <check if="{{ (@existingRecords[@student.id]['status'] ?? '') == 'excused' }}">selected</check>>استفاده از اجازه</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="period[]" value="{{ @existingRecords[@student.id]['period'] ?? '' }}" placeholder="بازه زمانی">
+                                </td>
+                                <td>
+                                    <input type="text" name="notes[]" value="{{ @existingRecords[@student.id]['notes'] ?? '' }}" placeholder="توضیحات">
+                                </td>
+                            </tr>
+                            </repeat>
+                        </tbody>
+                    </table>
+                </div>
+
+                <check if="{{ count(@students) == 0 }}">
+                    <p class="empty-state">هیچ دانش‌آموزی در این کلاس یافت نشد.</p>
+                <false>
+                    <div class="dialog-buttons">
+                        <button type="submit" class="btn btn-success">ثبت حضور و غیاب</button>
+                        <a href="/attendance" class="btn btn-outline-secondary">لغو</a>
+                    </div>
+                </check>
+            </form>
+        <false>
+            <check if="{{ @selectedClassId > 0 || @selectedDate != '' }}">
+                <p class="empty-state">لطفاً کلاس و تاریخ را انتخاب کنید.</p>
+            </check>
+        </check>
+
+    </div>
+</div>

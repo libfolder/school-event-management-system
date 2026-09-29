@@ -28,26 +28,9 @@
 
                 <a href="/" class="nav-link"><span class="nav-icon">🏠</span> صفحه اصلی</a>
 
-                <div class="nav-group" data-dropdown>
-                    <button type="button" class="nav-link nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
-                        <span class="nav-icon">🎓</span> دانش‌آموزان <span class="drop-caret">▾</span>
-                    </button>
-                    <div class="dropdown">
-                        <div class="dropdown-label">🎓 دانش‌آموزان</div>
-                        <a href="/students" class="dropdown-item">فهرست دانش‌آموزان</a>
-                        <a href="/students/create" class="dropdown-item">➕ دانش‌آموز جدید</a>
-                    </div>
-                </div>
+                <a href="/students" class="nav-link"><span class="nav-icon">🎓</span> دانش‌آموزان</a>
 
-                <div class="nav-group" data-dropdown>
-                    <button type="button" class="nav-link nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
-                        <span class="nav-icon">🏫</span> کلاس‌ها <span class="drop-caret">▾</span>
-                    </button>
-                    <div class="dropdown">
-                        <a href="/classes" class="dropdown-item">🏫 فهرست کلاس‌ها</a>
-                        <a href="/classes/create" class="dropdown-item">➕ کلاس جدید</a>
-                    </div>
-                </div>
+                <a href="/classes" class="nav-link"><span class="nav-icon">🏫</span> کلاس‌ها</a>
 
                 <div class="nav-group" data-dropdown>
                     <button type="button" class="nav-link nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
@@ -64,15 +47,9 @@
                     </div>
                 </div>
 
-                <div class="nav-group" data-dropdown>
-                    <button type="button" class="nav-link nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
-                        <span class="nav-icon">🗂️</span> اقدامات <span class="drop-caret">▾</span>
-                    </button>
-                    <div class="dropdown">
-                        <a href="/actions" class="dropdown-item">🗂️ فهرست اقدامات</a>
-                        <a href="/actions/create" class="dropdown-item">➕ اقدام جدید</a>
-                    </div>
-                </div>
+                <a href="/actions" class="nav-link"><span class="nav-icon">🗂️</span> اقدامات</a>
+
+                <a href="/attendance" class="nav-link"><span class="nav-icon">🕐</span> حضور و غیاب</a>
 
                 <div class="nav-group" data-dropdown>
                     <button type="button" class="nav-link nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
@@ -115,6 +92,20 @@
         <span class="status-text">{{ @title }} — نسخه {{ @app_version }}</span>
         <span class="status-meta">📜 Paper Edition</span>
     </footer>
+
+    <!-- PAGE HELP -->
+
+    <check if="{{ @help }}">
+        <div class="page-help">
+            <div class="page-help-inner">
+                <div class="page-help-icon">💡</div>
+                <div class="page-help-body">
+                    <div class="page-help-title">راهنما</div>
+                    <div class="page-help-text">{{ @help }}</div>
+                </div>
+            </div>
+        </div>
+    </check>
 
 </div>
 

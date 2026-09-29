@@ -1,0 +1,40 @@
+<div class="card">
+    <div class="card-header">
+        وارد کردن دسته‌جمعی دانش‌آموزان
+    </div>
+    <div class="card-body">
+
+        <div class="alert alert-info" style="margin-bottom:20px;padding:14px 16px;background:var(--primary-soft);border:1px solid var(--primary);border-radius:var(--radius-md);color:var(--primary-ink);">
+            <div class="alert-icon">ℹ️</div>
+            <div class="alert-body">
+                <div class="alert-title">راهنمای فرمت فایل</div>
+                <p style="font-size:13px;margin-top:6px;line-height:1.8;">
+                    فایل باید با فرمت <strong>CSV</strong> یا <strong>TXT</strong> باشد و جداکنندهٔ ستون‌ها باید کاما (,) باشد.<br>
+                    ترتیب ستون‌ها: <code>کد ملی, نام, نام خانوادگی, نام معلم</code><br>
+                    مثال: <code>0012345671, علی, احمدی, مرادی</code>
+                </p>
+            </div>
+        </div>
+
+        <form method="POST" action="/import/upload" enctype="multipart/form-data" class="upload-form">
+            <div class="form-group">
+                <label>انتخاب کلاس:</label>
+                <select name="class_id" required>
+                    <option value="">انتخاب کلاس</option>
+                    <repeat group="@classes" value="@cls">
+                        <option value="{{ @cls.id }}">{{ @cls.name }} - پایه {{ @cls.grade }}</option>
+                    </repeat>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>انتخاب فایل CSV:</label>
+                <input type="file" name="file" accept=".csv,.txt" required>
+            </div>
+            <div class="dialog-buttons">
+                <button type="submit" class="btn btn-success">آپلود و پیش‌نمایش</button>
+                <a href="/" class="btn btn-outline-secondary">لغو</a>
+            </div>
+        </form>
+
+    </div>
+</div>

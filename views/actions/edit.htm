@@ -32,7 +32,7 @@
                     <option value="">انتخاب دانش‌آموز</option>
                     <repeat group="@students" value="@student">
                         <option value="{{ @student.id }}"
-                            <check if="{{ (@old.student_id ?? 0) == @student.id }}">
+                            <check if="{{ (@preselected_student_id > 0 ? @preselected_student_id : (@old.student_id ?? @item.student_id ?? 0)) == @student.id }}">
                                 selected
                             </check>
                         >{{ @student.name }} - {{ @student.class_name }}</option>
@@ -48,7 +48,7 @@
                     <option value="">انتخاب (اختیاری)</option>
                     <repeat group="@events" value="@event">
                         <option value="{{ @event.id }}"
-                            <check if="{{ (@old.event_id ?? 0) == @event.id }}">
+                            <check if="{{ (@old.event_id ?? @preselected_event_id ?? 0) == @event.id }}">
                                 selected
                             </check>
                         >رویداد # {{ @event.id }} - {{ @event.student_name }}</option>
@@ -94,13 +94,7 @@
                     <span class="field-error">{{ @errors.title }}</span>
                 </check>
             </div>
-            <div class="form-group {{ @errors.action_date ?? '' ? 'has-error' : '' }}">
-                <label>تاریخ اقدام:</label>
-                <input type="text" name="action_date" value="{{ @old.action_date ?? \App\Helpers\JalaliDate::format(@item.action_date ?? '') }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input">
-                <check if="{{ @errors.action_date ?? '' }}">
-                    <span class="field-error">{{ @errors.action_date }}</span>
-                </check>
-            </div>
+
         </div>
         <div class="form-row">
             <div class="form-group">
@@ -122,3 +116,5 @@
         </div>
     </form>
 </div>
+
+

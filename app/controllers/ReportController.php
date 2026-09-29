@@ -29,6 +29,7 @@ class ReportController extends BaseController
 
         $this->render('reports/index.htm', [
             'title' => 'گزارش‌ها',
+            'help' => 'داشبورد گزارش‌ها شامل آمار کلاس‌ها، دانش‌آموزان برتر، دانش‌آموزان با امتیاز منفی و گزارش غیبت‌ها است.',
             'classes' => $classes,
             'classId' => $classId,
             'classSummary' => $classSummary,
@@ -49,6 +50,7 @@ class ReportController extends BaseController
 
         $this->render('reports/analysis.htm', [
             'title' => 'تحلیل و نتیجه‌گیری آمار',
+            'help' => 'تحلیل خودکار آمار ثبت‌شده و ارائه یافته‌هایی برای بهبود مدیریت کلاس.',
             'stats' => $analysis['stats'],
             'findings' => $analysis['findings'],
             'summary' => $analysis['summary'],
@@ -60,6 +62,7 @@ class ReportController extends BaseController
         // Blank paper form: no database data is rendered
         $this->render('reports/class-form.htm', [
             'title' => 'فرم جمع‌آوری اطلاعات کلاس',
+            'help' => 'این فرم برای پر کردن دستی در段时间 مورد استفاده قرار می‌گیرد. اطلاعات کلاس و دانش‌آموزان را در این فرم ثبت کنید.',
         ], 'reports/print-layout.htm');
     }
 
@@ -89,6 +92,7 @@ class ReportController extends BaseController
 
         $this->render('reports/attendance-form.htm', [
             'title' => 'فرم حضور و غیاب کلاس‌ها',
+            'help' => 'این فرم برای ثبت دستی حضور و غیاب کلاس‌ها استفاده می‌شود. هر کلاس یک جدول جداگانه دارد.',
             'classes' => $classes,
             'attendanceClasses' => $attendanceClasses,
             'rows' => $rows,

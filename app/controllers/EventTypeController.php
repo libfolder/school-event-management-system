@@ -8,9 +8,13 @@ class EventTypeController extends BaseController
     {
         $models = $this->f3->get('models');
         $eventTypes = $models['EventType']->all();
+        foreach ($eventTypes as $index => $type) {
+            $eventTypes[$index]['row_number'] = $index + 1;
+        }
 
         $this->render('event-types/index.htm', [
             'title' => 'انواع رویدادها',
+            'help' => 'لیست قالب‌های رویدادها. هر نوع رویداد دارای امتیاز پیش‌فرض وpolarity مثبت/منفی است.',
             'eventTypes' => $eventTypes,
         ], 'layout.htm');
     }
@@ -19,6 +23,7 @@ class EventTypeController extends BaseController
     {
         $this->render('event-types/edit.htm', [
             'title' => 'اضافه کردن نوع رویداد',
+            'help' => 'نام نوع رویداد و امتیاز پیش‌فرض را وارد کنید. امتیازهای منفی برای تخلفات و مثبت برای comportamentos خوب است.',
             'action' => 'create',
             'form_action' => '/event-types/store',
             'item' => [],
@@ -67,6 +72,7 @@ class EventTypeController extends BaseController
 
         $this->render('event-types/edit.htm', [
             'title' => 'ویرایش نوع رویداد',
+            'help' => 'امتیاز پیش‌فرض را می‌توانید تغییر دهید. امتیازهای منفی برای تخلفات و مثبت برای comportamentos خوب است.',
             'action' => 'edit',
             'form_action' => '/event-types/' . $params['id'] . '/update',
             'item' => $item,

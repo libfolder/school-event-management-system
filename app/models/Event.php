@@ -8,40 +8,41 @@ class Event extends BaseModel
 
     public function all()
     {
-        $sql = 'SELECT e.*, CONCAT(s.first_name, " ", s.last_name) AS student_name,
-                       et.name AS event_type_name, et.is_positive,
-                       u.name AS teacher_name
-                FROM events e
-                LEFT JOIN students s ON e.student_id = s.id
-                LEFT JOIN event_types et ON e.event_type_id = et.id
-                LEFT JOIN users u ON e.teacher_id = u.id
-                ORDER BY e.event_date DESC, e.created_at DESC';
+        $sql = 'SELECT e.*, s.id AS student_id,
+                        CONCAT(s.first_name, " ", s.last_name) AS student_name,
+                        et.name AS event_type_name, et.is_positive,
+                        CONCAT(u.first_name, " ", u.last_name) AS teacher_name
+                 FROM events e
+                 LEFT JOIN students s ON e.student_id = s.id
+                 LEFT JOIN event_types et ON e.event_type_id = et.id
+                 LEFT JOIN users u ON e.teacher_id = u.id
+                 ORDER BY e.event_date DESC, e.created_at DESC';
         return $this->db->exec($sql);
     }
 
     public function find(int $id)
     {
         $sql = 'SELECT e.*, CONCAT(s.first_name, " ", s.last_name) AS student_name,
-                       et.name AS event_type_name, et.is_positive,
-                       s.student_id, et.default_score,
-                       u.name AS teacher_name
-                FROM events e
-                LEFT JOIN students s ON e.student_id = s.id
-                LEFT JOIN event_types et ON e.event_type_id = et.id
-                LEFT JOIN users u ON e.teacher_id = u.id
-                WHERE e.id = :id';
+                        et.name AS event_type_name, et.is_positive,
+                        s.student_id, et.default_score,
+                        CONCAT(u.first_name, " ", u.last_name) AS teacher_name
+                 FROM events e
+                 LEFT JOIN students s ON e.student_id = s.id
+                 LEFT JOIN event_types et ON e.event_type_id = et.id
+                 LEFT JOIN users u ON e.teacher_id = u.id
+                 WHERE e.id = :id';
         $result = $this->db->exec($sql, ['id' => $id]);
         return $result[0] ?? null;
     }
 
     public function getByStudent(int $studentId)
     {
-        $sql = 'SELECT e.*, et.name AS event_type_name, et.is_positive, u.name AS teacher_name
-                FROM events e
-                LEFT JOIN event_types et ON e.event_type_id = et.id
-                LEFT JOIN users u ON e.teacher_id = u.id
-                WHERE e.student_id = :id
-                ORDER BY e.event_date DESC, e.created_at DESC';
+        $sql = 'SELECT e.*, et.name AS event_type_name, et.is_positive, CONCAT(u.first_name, " ", u.last_name) AS teacher_name
+                 FROM events e
+                 LEFT JOIN event_types et ON e.event_type_id = et.id
+                 LEFT JOIN users u ON e.teacher_id = u.id
+                 WHERE e.student_id = :id
+                 ORDER BY e.event_date DESC, e.created_at DESC';
         return $this->db->exec($sql, ['id' => $studentId]);
     }
 
@@ -130,17 +131,17 @@ class Event extends BaseModel
 
     public function getClassSummary()
     {
-        $sql = 'SELECT c.id, c.name, c.grade, c.section,
+        $sql = 'SELECT c.id, c.name, c.grade, c.teacher_name,
                        COUNT(DISTINCT s.id) AS student_count,
                        COUNT(e.id) AS event_count,
                        COALESCE(SUM(e.score), 0) AS total_score,
                        COALESCE(SUM(CASE WHEN e.score > 0 THEN e.score ELSE 0 END), 0) AS positive_score,
                        COALESCE(SUM(CASE WHEN e.score < 0 THEN e.score ELSE 0 END), 0) AS negative_score
-                FROM classes c
-                LEFT JOIN students s ON s.class_id = c.id
-                LEFT JOIN events e ON s.id = e.student_id
-                GROUP BY c.id, c.name, c.grade, c.section
-                ORDER BY c.grade ASC, c.section ASC';
+                 FROM classes c
+                 LEFT JOIN students s ON s.class_id = c.id
+                 LEFT JOIN events e ON s.id = e.student_id
+                 GROUP BY c.id, c.name, c.grade, c.teacher_name
+                 ORDER BY c.grade ASC, c.teacher_name ASC';
         return $this->db->exec($sql);
     }
 

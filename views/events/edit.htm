@@ -32,7 +32,7 @@
                     <option value="">انتخاب دانش‌آموز</option>
                     <repeat group="@students" value="@student">
                         <option value="{{ @student.id }}"
-                            <check if="{{ (@old.student_id ?? 0) == @student.id }}">
+                            <check if="{{ (@old.student_id ?? @preselected_student_id ?? 0) == @student.id }}">
                                 selected
                             </check>
                         >{{ @student.name }} - {{ @student.class_name }}</option>
@@ -58,20 +58,11 @@
                     <span class="field-error">{{ @errors.event_type_id }}</span>
                 </check>
             </div>
-        </div>
-        <div class="form-row">
             <div class="form-group {{ @errors.score ?? '' ? 'has-error' : '' }}">
                 <label>امتیاز:</label>
-                <input type="number" name="score" id="score" value="{{ @old.score ?? '' }}" min="-100" max="100" required>
+                <input type="number" name="score" id="score" value="{{ @old.score ?? '' }}" min="-100" max="100" required dir="ltr">
                 <check if="{{ @errors.score ?? '' }}">
                     <span class="field-error">{{ @errors.score }}</span>
-                </check>
-            </div>
-            <div class="form-group {{ @errors.event_date ?? '' ? 'has-error' : '' }}">
-                <label>تاریخ رویداد:</label>
-                <input type="text" name="event_date" value="{{ @old.event_date ?? \App\Helpers\JalaliDate::format(@event.event_date ?? '') }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input" required>
-                <check if="{{ @errors.event_date ?? '' }}">
-                    <span class="field-error">{{ @errors.event_date }}</span>
                 </check>
             </div>
         </div>
@@ -91,12 +82,13 @@
 </div>
 
 <script>
-function updateScore() {
-    var select = document.getElementById('event_type_id');
-    var selectedOption = select.options[select.selectedIndex];
-    var score = selectedOption.getAttribute('data-score');
-    if (score) {
-        document.getElementById('score').value = score;
+    function updateScore() {
+        var select = document.getElementById('event_type_id');
+        if (!select) return;
+        var selectedOption = select.options[select.selectedIndex];
+        var score = selectedOption.getAttribute('data-score');
+        if (score) {
+            document.getElementById('score').value = score;
+        }
     }
-}
 </script>

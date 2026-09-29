@@ -1,0 +1,110 @@
+<div class="student-profile-layout">
+
+    <aside class="student-profile-sidebar">
+        <div class="card">
+            <div class="card-header">
+                مشخصات دانش‌آموز
+            </div>
+            <div class="card-body">
+                <div class="profile-info">
+                    <div class="profile-row">
+                        <span class="profile-label">شماره دانش‌آموزی</span>
+                        <span class="profile-value">{{ @student.student_id }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">نام و نام خانوادگی</span>
+                        <span class="profile-value">{{ @student.name }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">کلاس</span>
+                        <span class="profile-value">{{ @student.class_name }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">پایه</span>
+                        <span class="profile-value">{{ @student.grade }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">کد ملی</span>
+                        <span class="profile-value">{{ @student.melli_code }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">نام پدر</span>
+                        <span class="profile-value">{{ @student.father_name }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">تلفن پدر</span>
+                        <span class="profile-value">{{ @student.father_phone }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">تلفن مادر</span>
+                        <span class="profile-value">{{ @student.mother_phone }}</span>
+                    </div>
+                    <div class="profile-row">
+                        <span class="profile-label">امتیاز کل</span>
+                        <span class="profile-value">
+                            <check if="{{ @student.total_score > 0 }}">
+                                <span class="score-positive">{{ @student.total_score }}</span>
+                            <false>
+                                <check if="{{ @student.total_score < 0 }}">
+                                    <span class="score-negative">{{ @student.total_score }}</span>
+                                <false>
+                                    <span>{{ @student.total_score }}</span>
+                                </check>
+                            </check>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <section class="student-profile-main">
+        <div class="card">
+            <div class="card-header">
+                رویدادهای دانش‌آموز
+                <a href="/events/create?student_id={{ @student.id }}" class="btn btn-success btn-sm">＋ ثبت رویداد جدید</a>
+            </div>
+            <div class="card-body">
+                <check if="{{ count(@events) }}">
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>تاریخ</th>
+                                    <th>نوع رویداد</th>
+                                    <th>امتیاز</th>
+                                    <th>معلم</th>
+                                    <th>توضیحات</th>
+                                    <th>اقدام</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <repeat group="@events" value="@event">
+                                <tr>
+                                    <td>{{ @event.id }}</td>
+                                    <td>{{ \App\Helpers\JalaliDate::format(@event.event_date) }}</td>
+                                    <td>{{ @event.event_type_name }}</td>
+                                    <td>
+                                        <check if="{{ @event.score > 0 }}">
+                                            <span class="score-positive">{{ @event.score }}</span>
+                                        <false>
+                                            <span class="score-negative">{{ @event.score }}</span>
+                                        </check>
+                                    </td>
+                                    <td>{{ @event.teacher_name }}</td>
+                                    <td>{{ @event.description }}</td>
+                                    <td><a href="/actions/create?event_id={{ @event.id }}&student_id={{ @student.id }}" class="btn btn-sm btn-outline-primary">اقدام</a></td>
+                                </tr>
+                                </repeat>
+                            </tbody>
+                        </table>
+                    </div>
+                <false>
+                    <p class="empty-state">هیچ رویدادی برای این دانش‌آموز ثبت نشده است.</p>
+                </check>
+            </div>
+        </div>
+    </section>
+
+</div>

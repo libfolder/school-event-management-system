@@ -8,9 +8,13 @@ class EventController extends BaseController
     {
         $models = $this->f3->get('models');
         $events = $models['Event']->all();
+        foreach ($events as $index => $event) {
+            $events[$index]['row_number'] = $index + 1;
+        }
 
         $this->render('events/index.htm', [
             'title' => 'مدیریت رویدادها',
+            'help' => 'لیست تمام رویدادهای ثبت‌شده برای دانش‌آموزان نمایش داده می‌شود. هر رویداد شامل نوع، امتیاز، تاریخ و معلم ثبت‌کننده است.',
             'events' => $events,
         ], 'layout.htm');
     }
@@ -18,14 +22,17 @@ class EventController extends BaseController
     public function create()
     {
         $models = $this->f3->get('models');
+        $preselectedStudentId = (int)($this->f3->get('GET.student_id') ?? 0);
 
         $this->render('events/edit.htm', [
             'title' => 'ثبت رویداد جدید',
+            'help' => 'یک دانش‌آموز، نوع رویداد و تاریخ را انتخاب کنید. امتیاز به صورت خودکار از نوع رویداد پر می‌شود.',
             'action' => 'create',
             'form_action' => '/events/store',
             'students' => $models['Student']->allWithClass(),
             'eventTypes' => $models['EventType']->all(),
             'event' => [],
+            'preselected_student_id' => $preselectedStudentId,
         ], 'layout.htm');
     }
 
@@ -48,18 +55,18 @@ class EventController extends BaseController
 
         $models = $this->f3->get('models');
         $eventModel = $models['Event'];
-
         $eventTypeId = (int)$this->postRaw('event_type_id');
         $eventType = $models['EventType']->find($eventTypeId);
 
         $score = (int)$this->postRaw('score');
+
         $eventId = $eventModel->create([
             'student_id' => (int)$this->postRaw('student_id'),
             'event_type_id' => $eventTypeId,
             'score' => $score,
             'description' => $this->postClean('description'),
             'teacher_id' => 1,
-            'event_date' => \App\Helpers\JalaliDate::parse($this->postRaw('event_date')),
+            'event_date' => date('Y-m-d'),
         ]);
 
         $this->checkAndCreateActions((int)$eventId, $score, (int)$this->postRaw('student_id'));
@@ -105,13 +112,15 @@ class EventController extends BaseController
         }
 
         $models = $this->f3->get('models');
-        $models['Event']->update((int)$params['id'], [
+        $eventModel = $models['Event'];
+
+        $eventModel->update((int)$params['id'], [
             'student_id' => (int)$this->postRaw('student_id'),
             'event_type_id' => (int)$this->postRaw('event_type_id'),
             'score' => (int)$this->postRaw('score'),
             'description' => $this->postClean('description'),
             'teacher_id' => 1,
-            'event_date' => \App\Helpers\JalaliDate::parse($this->postRaw('event_date')),
+            'event_date' => date('Y-m-d'),
         ]);
 
         $this->redirect('/events');
@@ -123,12 +132,10 @@ class EventController extends BaseController
             'student_id' => 'دانش‌آموز',
             'event_type_id' => 'نوع رویداد',
             'score' => 'امتیاز',
-            'event_date' => 'تاریخ رویداد',
         ]);
         $this->validateExists('student_id', 'دانش‌آموز', 'Student', 'find');
         $this->validateExists('event_type_id', 'نوع رویداد', 'EventType', 'find');
         $this->validateInt('score', 'امتیاز', -100, 100);
-        $this->validateDate('event_date', 'تاریخ رویداد');
         $this->validateLength('description', 'توضیحات', 0, 1000);
     }
 

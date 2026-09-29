@@ -1,0 +1,87 @@
+<check if="{{ @errors }}">
+    <div class="alert" role="alert">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-body">
+            <div class="alert-title">خطا در ثبت اطلاعات</div>
+            <ul class="alert-list">
+                <repeat group="@errors" key="@field" value="@message">
+                    <li>{{ @message }}</li>
+                </repeat>
+            </ul>
+        </div>
+        <button type="button" class="alert-close" onclick="this.closest('.alert').remove()">×</button>
+    </div>
+</check>
+
+<div class="dialog">
+    <div class="dialog-titlebar">
+        <span class="dialog-title">✏️ ویرایش حضور و غیاب</span>
+        <a href="/attendance" class="dialog-close" title="بستن">×</a>
+    </div>
+    <form method="POST" action="{{ @form_action }}" class="dialog-body" novalidate>
+        <div class="form-row">
+            <div class="form-group {{ @errors.student_id ?? '' ? 'has-error' : '' }}">
+                <label>دانش‌آموز:</label>
+                <select name="student_id" required>
+                    <option value="">انتخاب دانش‌آموز</option>
+                    <repeat group="@classes" value="@class">
+                        <optgroup label="{{ @class.name }} (پایه {{ @class.grade }})">
+                            <repeat group="@students" value="@student">
+                                <check if="{{ @student.class_id == @class.id }}">
+                                    <option value="{{ @student.id }}"
+                                        <check if="{{ (@old.student_id ?? @attendance.student_id) == @student.id }}">
+                                            selected
+                                        </check>
+                                    >{{ @student.name }} - {{ @student.student_id }}</option>
+                                </check>
+                            </repeat>
+                        </optgroup>
+                    </repeat>
+                </select>
+                <check if="{{ @errors.student_id ?? '' }}">
+                    <span class="field-error">{{ @errors.student_id }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.attendance_date ?? '' ? 'has-error' : '' }}">
+                <label>تاریخ حضور:</label>
+                <input type="text" name="attendance_date" value="{{ @old.attendance_date ?? \App\Helpers\JalaliDate::format(@attendance.attendance_date) }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input" required>
+                <check if="{{ @errors.attendance_date ?? '' }}">
+                    <span class="field-error">{{ @errors.attendance_date }}</span>
+                </check>
+            </div>
+            <div class="form-group {{ @errors.status ?? '' ? 'has-error' : '' }}">
+                <label>وضعیت:</label>
+                <select name="status" required>
+                    <option value="present" <check if="{{ (@old.status ?? @attendance.status) == 'present' }}">selected</check>>حاضر</option>
+                    <option value="absent" <check if="{{ (@old.status ?? @attendance.status) == 'absent' }}">selected</check>>غایب</option>
+                    <option value="late" <check if="{{ (@old.status ?? @attendance.status) == 'late' }}">selected</check>>تأخیر</option>
+                    <option value="excused" <check if="{{ (@old.status ?? @attendance.status) == 'excused' }}">selected</check>>استفاده از اجازه</option>
+                </select>
+                <check if="{{ @errors.status ?? '' }}">
+                    <span class="field-error">{{ @errors.status }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group {{ @errors.period ?? '' ? 'has-error' : '' }}">
+                <label>بازه زمانی:</label>
+                <input type="text" name="period" value="{{ @old.period ?? @attendance.period ?? '' }}" placeholder="مثل: صبح، بعد از ظهر">
+                <check if="{{ @errors.period ?? '' }}">
+                    <span class="field-error">{{ @errors.period }}</span>
+                </check>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>توضیحات:</label>
+                <textarea name="notes" placeholder="توضیحات اختیاری">{{ @old.notes ?? @attendance.notes ?? '' }}</textarea>
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button type="submit" class="btn btn-success">به‌روزرسانی</button>
+            <a href="/attendance" class="btn btn-outline-secondary">لغو</a>
+        </div>
+    </form>
+</div>

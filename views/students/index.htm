@@ -1,7 +1,10 @@
 <div class="card">
     <div class="card-header">
-        فهرست دانش‌آموزان
-        <a href="/students/create" class="btn btn-success btn-sm">＋ اضافه کردن دانش‌آموز</a>
+        <span class="card-title">فهرست دانش‌آموزان</span>
+        <div class="card-actions">
+            <a href="/students/create" class="btn btn-success btn-sm">＋ اضافه کردن دانش‌آموز</a>
+            <a href="/import" class="btn btn-outline-primary btn-sm">📥 وارد کردن دسته‌جمعی</a>
+        </div>
     </div>
     <div class="card-body">
 
@@ -25,7 +28,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>ردیف</th>
                             <th>شماره دانش‌آموزی</th>
                             <th>نام</th>
                             <th>کلاس</th>
@@ -35,16 +38,15 @@
                             <th>تلفن پدر</th>
                             <th>تلفن مادر</th>
                             <th>امتیاز کل</th>
-                            <th>تاریخ ثبت</th>
                             <th>عملیات</th>
                         </tr>
                     </thead>
                     <tbody>
                         <repeat group="@students" value="@student">
                         <tr>
-                            <td>{{ @student.id }}</td>
-                            <td>{{ @student.student_id }}</td>
-                            <td>{{ @student.name }}</td>
+                            <td>{{ @student.row_number }}</td>
+                            <td><a href="/students/{{ @student.id }}">{{ @student.student_id }}</a></td>
+                            <td><a href="/students/{{ @student.id }}">{{ @student.name }}</a></td>
                             <td>{{ @student.class_name }}</td>
                             <td>{{ @student.grade }}</td>
                             <td>{{ @student.melli_code }}</td>
@@ -62,8 +64,8 @@
                                     </check>
                                 </check>
                             </td>
-                            <td>{{ \App\Helpers\JalaliDate::format(@student.created_at) }}</td>
                             <td>
+                                <a href="/students/{{ @student.id }}" class="btn btn-sm btn-outline-primary">اطلاعات بیشتر</a>
                                 <a href="/students/{{ @student.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
                                 <a href="/students/{{ @student.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
                             </td>
@@ -72,6 +74,30 @@
                     </tbody>
                 </table>
             </div>
+
+            <check if="{{ @total_pages > 1 }}">
+                <div class="pagination">
+                    <check if="{{ @page > 1 }}">
+                        <a href="{{ @list_url }}?page={{ @page - 1 }}{{ @query }}" class="page-link page-prev">◀ قبلی</a>
+                    <false>
+                        <span class="page-link page-disabled">◀ قبلی</span>
+                    </check>
+
+                    <repeat group="@pages" value="@p">
+                        <check if="{{ @p == @page }}">
+                            <span class="page-link page-active">{{ @p }}</span>
+                        <false>
+                            <a href="{{ @list_url }}?page={{ @p }}{{ @query }}" class="page-link">{{ @p }}</a>
+                        </check>
+                    </repeat>
+
+                    <check if="{{ @page < @total_pages }}">
+                        <a href="{{ @list_url }}?page={{ @page + 1 }}{{ @query }}" class="page-link page-next">بعدی ◀</a>
+                    <false>
+                        <span class="page-link page-disabled">بعدی ◀</span>
+                    </check>
+                </div>
+            </check>
         <false>
             <p class="empty-state">
                 <check if="{{ @search }}">

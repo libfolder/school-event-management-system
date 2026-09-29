@@ -7,12 +7,28 @@ class StudentController extends BaseController
     public function index()
     {
         $models = $this->f3->get('models');
-        $students = $models['Student']->allWithClass();
+        $page = max(1, (int)($this->f3->get('GET.page') ?? 1));
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+
+        $totalCount = $models['Student']->countWithClass();
+        $totalPages = (int)ceil($totalCount / $limit);
+        $students = $models['Student']->allWithClass(null, $limit, $offset);
+        foreach ($students as $index => $student) {
+            $students[$index]['row_number'] = $offset + $index + 1;
+        }
 
         $this->render('students/index.htm', [
             'title' => 'مدیریت دانش‌آموزان',
+            'help' => 'در این صفحه فهرست تمام دانش‌آموزان نمایش داده می‌شود. برای افزودن دانش‌آموز جدید از دکمه «دانش‌آموز جدید» استفاده کنید.',
             'students' => $students,
             'search' => '',
+            'page' => $page,
+            'total_pages' => $totalPages,
+            'total_count' => $totalCount,
+            'pages' => range(1, $totalPages),
+            'list_url' => '/students',
+            'query' => '',
         ], 'layout.htm');
     }
 
@@ -20,12 +36,28 @@ class StudentController extends BaseController
     {
         $models = $this->f3->get('models');
         $term = trim($this->f3->get('GET.q') ?? '');
-        $students = $models['Student']->allWithClass($term);
+        $page = max(1, (int)($this->f3->get('GET.page') ?? 1));
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
+
+        $totalCount = $models['Student']->countWithClass($term);
+        $totalPages = (int)ceil($totalCount / $limit);
+        $students = $models['Student']->allWithClass($term, $limit, $offset);
+        foreach ($students as $index => $student) {
+            $students[$index]['row_number'] = $offset + $index + 1;
+        }
 
         $this->render('students/index.htm', [
             'title' => 'مدیریت دانش‌آموزان',
+            'help' => 'نتایج جستجو بر اساس نام، شماره دانش‌آموزی یا کلاس نمایش داده می‌شود.',
             'students' => $students,
             'search' => $term,
+            'page' => $page,
+            'total_pages' => $totalPages,
+            'total_count' => $totalCount,
+            'pages' => range(1, $totalPages),
+            'list_url' => '/students/search',
+            'query' => '&q=' . urlencode($term),
         ], 'layout.htm');
     }
 
@@ -36,6 +68,7 @@ class StudentController extends BaseController
 
         $this->render('students/edit.htm', [
             'title' => 'اضافه کردن دانش‌آموز',
+            'help' => 'فیلدهای اجباری با علامت * مشخص شده‌اند. شماره دانش‌آموزی و کد ملی باید منحصر به فرد باشند.',
             'action' => 'create',
             'form_action' => '/students/store',
             'classes' => $classes,
@@ -79,6 +112,7 @@ class StudentController extends BaseController
 
         $this->render('students/edit.htm', [
             'title' => 'ویرایش دانش‌آموز',
+            'help' => 'می‌توانید اطلاعات دانش‌آموز را ویرایش کنید. شماره دانش‌آموزی و کد ملی باید منحصر به فرد باشند.',
             'action' => 'edit',
             'form_action' => '/students/' . $params['id'] . '/update',
             'classes' => $classes,
@@ -107,6 +141,27 @@ class StudentController extends BaseController
         $models['Student']->update((int)$params['id'], $this->studentData());
 
         $this->redirect('/students');
+    }
+
+    public function show($f3, $params)
+    {
+        $models = $this->f3->get('models');
+        $student = $models['Student']->find((int)$params['id']);
+
+        if (!$student) {
+            $f3->error(404, 'دانش‌آموز یافت نشد');
+            return;
+        }
+
+        $student['total_score'] = $models['Student']->getScore((int)$params['id']);
+        $events = $models['Event']->getByStudent((int)$params['id']);
+
+        $this->render('students/show.htm', [
+            'title' => $student['name'],
+            'help' => 'مشاهده مشخصات و رویدادهای دانش‌آموز.',
+            'student' => $student,
+            'events' => $events,
+        ], 'layout.htm');
     }
 
     public function delete($f3, $params)

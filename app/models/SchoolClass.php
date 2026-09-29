@@ -11,8 +11,8 @@ class SchoolClass extends BaseModel
         $sql = 'SELECT c.*, COUNT(s.id) AS student_count
                 FROM classes c
                 LEFT JOIN students s ON s.class_id = c.id
-                GROUP BY c.id, c.name, c.grade, c.section, c.created_at
-                ORDER BY c.grade ASC, c.section ASC';
+                GROUP BY c.id, c.name, c.grade, c.teacher_name, c.created_at
+                ORDER BY c.grade ASC, c.teacher_name ASC';
         return $this->db->exec($sql);
     }
 
@@ -29,7 +29,7 @@ class SchoolClass extends BaseModel
         $mapper->reset();
         $mapper->name = $data['name'];
         $mapper->grade = $data['grade'];
-        $mapper->section = $data['section'];
+        $mapper->teacher_name = $data['teacher_name'] ?? null;
         $mapper->insert();
         return $mapper->get('id');
     }
@@ -40,7 +40,7 @@ class SchoolClass extends BaseModel
         $mapper->load(['id = ?', $id]);
         $mapper->name = $data['name'];
         $mapper->grade = $data['grade'];
-        $mapper->section = $data['section'];
+        $mapper->teacher_name = $data['teacher_name'] ?? null;
         return $mapper->update();
     }
 
@@ -64,7 +64,7 @@ class SchoolClass extends BaseModel
                 FROM classes c
                 LEFT JOIN students s ON s.class_id = c.id
                 WHERE c.id = :id
-                GROUP BY c.id, c.name, c.grade, c.section, c.created_at';
+                GROUP BY c.id, c.name, c.grade, c.teacher_name, c.created_at';
         $result = $this->db->exec($sql, ['id' => $id]);
         return $result[0] ?? null;
     }

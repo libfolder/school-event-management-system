@@ -83,7 +83,7 @@
                             <check if="{{ (@old.class_id ?? (@student.class_id ?? 0)) == @cls.id }}">
                                 selected
                             </check>
-                        >{{ @cls.name }} - پایه {{ @cls.grade }} {{ @cls.section }}</option>
+                        >{{ @cls.name }} - پایه {{ @cls.grade }} {{ @cls.teacher_name ?: '' }}</option>
                     </repeat>
                 </select>
                 <check if="{{ @errors.class_id ?? '' }}">

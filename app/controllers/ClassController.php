@@ -8,9 +8,13 @@ class ClassController extends BaseController
     {
         $models = $this->f3->get('models');
         $classes = $models['Class']->all();
+        foreach ($classes as $index => $class) {
+            $classes[$index]['row_number'] = $index + 1;
+        }
 
         $this->render('classes/index.htm', [
             'title' => 'مدیریت کلاس‌ها',
+            'help' => 'لیست کلاس‌ها به همراه نام معلم و تعداد دانش‌آموزان نمایش داده می‌شود. برای مدیریت دانش‌آموزان یک کلاس، روی نام کلاس کلیک کنید.',
             'classes' => $classes,
         ], 'layout.htm');
     }
@@ -26,9 +30,13 @@ class ClassController extends BaseController
         }
 
         $students = $models['Class']->students((int)$params['id']);
+        foreach ($students as $index => $student) {
+            $students[$index]['row_number'] = $index + 1;
+        }
 
         $this->render('classes/students.htm', [
             'title' => 'دانش‌آموزان ' . $class['name'],
+            'help' => 'فهرست دانش‌آموزان این کلاس. برای ویرایش اطلاعات هر دانش‌آموز، روی دکمه «ویرایش» کلیک کنید.',
             'class' => $class,
             'students' => $students,
         ], 'layout.htm');
@@ -38,6 +46,7 @@ class ClassController extends BaseController
     {
         $this->render('classes/edit.htm', [
             'title' => 'اضافه کردن کلاس',
+            'help' => 'نام کلاس و پایه تحصیلی اجباری هستند. نام معلم اختیاری است.',
             'action' => 'create',
             'form_action' => '/classes/store',
             'class' => [],
@@ -62,7 +71,7 @@ class ClassController extends BaseController
         $models['Class']->create([
             'name' => $this->postClean('name'),
             'grade' => $this->validateInt('grade', 'پایه', 1, 12),
-            'section' => $this->postClean('section'),
+            'teacher_name' => $this->postClean('teacher_name') ?: null,
         ]);
 
         $this->redirect('/classes');
@@ -80,6 +89,7 @@ class ClassController extends BaseController
 
         $this->render('classes/edit.htm', [
             'title' => 'ویرایش کلاس',
+            'help' => 'نام کلاس و پایه تحصیلی اجباری هستند. نام معلم اختیاری است.',
             'action' => 'edit',
             'form_action' => '/classes/' . $params['id'] . '/update',
             'class' => $class,
@@ -105,7 +115,7 @@ class ClassController extends BaseController
         $models['Class']->update((int)$params['id'], [
             'name' => $this->postClean('name'),
             'grade' => $this->validateInt('grade', 'پایه', 1, 12),
-            'section' => $this->postClean('section'),
+            'teacher_name' => $this->postClean('teacher_name') ?: null,
         ]);
 
         $this->redirect('/classes');
@@ -125,10 +135,9 @@ class ClassController extends BaseController
         $this->validateRequired([
             'name' => 'نام کلاس',
             'grade' => 'پایه',
-            'section' => 'بخش',
         ]);
         $this->validateLength('name', 'نام کلاس', 2, 50);
-        $this->validateLength('section', 'بخش', 1, 10);
+        $this->validateLength('teacher_name', 'نام معلم', 0, 100);
         $this->validateInt('grade', 'پایه', 1, 12);
     }
 }

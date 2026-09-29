@@ -261,4 +261,47 @@ class JalaliDate
         [$gy, $gm, $gd] = self::d2g(self::j2d($jy, $jm, $jd));
         return sprintf('%04d-%02d-%02d', $gy, $gm, $gd);
     }
+
+    public static function today(): string
+    {
+        [$jy, $jm, $jd] = self::g2j((int)date('Y'), (int)date('m'), (int)date('d'));
+        return self::toPersianDigits(sprintf('%04d/%02d/%02d', $jy, $jm, $jd));
+    }
+
+    public static function currentYear(): int
+    {
+        [$jy] = self::g2j((int)date('Y'), (int)date('m'), (int)date('d'));
+        return $jy;
+    }
+
+    public static function toJalaliParts(?string $mysqlDate): ?array
+    {
+        $date = is_string($mysqlDate) ? trim($mysqlDate) : '';
+        if ($date === '' || $date === '0000-00-00') {
+            return null;
+        }
+        $d = explode('-', explode(' ', $date)[0]);
+        if (count($d) !== 3) {
+            return null;
+        }
+        [$jy, $jm, $jd] = self::d2j(self::g2d((int)$d[0], (int)$d[1], (int)$d[2]));
+        return [
+            'year' => $jy,
+            'month' => $jm,
+            'day' => $jd,
+        ];
+    }
+
+    public static function fromJalaliParts(int $jy, int $jm, int $jd): ?string
+    {
+        if ($jy < 1200 || $jy > 1500 || $jm < 1 || $jm > 12 || $jd < 1) {
+            return null;
+        }
+        if ($jd > self::jalaaliMonthLength($jy, $jm)) {
+            return null;
+        }
+
+        [$gy, $gm, $gd] = self::d2g(self::j2d($jy, $jm, $jd));
+        return sprintf('%04d-%02d-%02d', $gy, $gm, $gd);
+    }
 }

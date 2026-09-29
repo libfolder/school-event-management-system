@@ -87,7 +87,7 @@
                         <repeat group="@classSummary" value="@row">
                         <tr>
                             <td>{{ @row.name }}</td>
-                            <td>{{ @row.grade }} {{ @row.section }}</td>
+                            <td>{{ @row.grade }} {{ @row.teacher_name ?: '-' }}</td>
                             <td>{{ @row.student_count }}</td>
                             <td>{{ @row.event_count }}</td>
                             <td>
@@ -124,7 +124,7 @@
                 <repeat group="@classes" value="@cls">
                     <option value="{{ @cls.id }}"
                         <check if="{{ @classId == @cls.id }}">selected</check>
-                    >{{ @cls.name }} - پایه {{ @cls.grade }} {{ @cls.section }}</option>
+                    >{{ @cls.name }} - پایه {{ @cls.grade }} {{ @cls.teacher_name ?: '' }}</option>
                 </repeat>
             </select>
             <button type="submit" class="btn btn-sm btn-primary">نمایش گزارش</button>

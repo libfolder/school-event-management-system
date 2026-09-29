@@ -1,0 +1,118 @@
+<div class="card">
+    <div class="card-header">
+        فهرست حضور و غیاب
+        <a href="/attendance/create" class="btn btn-success btn-sm">＋ ثبت حضور و غیاب</a>
+    </div>
+    <div class="card-body">
+
+        <form method="GET" action="/attendance" class="filter-bar">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label>کلاس:</label>
+                    <select name="class_id">
+                        <option value="">همه کلاس‌ها</option>
+                        <repeat group="@classes" value="@class">
+                            <option value="{{ @class.id }}" <check if="{{ @classId == @class.id }}">selected</check>>{{ @class.name }} (پایه {{ @class.grade }})</option>
+                        </repeat>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>تاریخ:</label>
+                    <input type="text" name="date" value="{{ @date }}" placeholder="۱۴۰۳/۰۹/۱۳" class="jalali-input">
+                </div>
+                <div class="form-group">
+                    <label>وضعیت:</label>
+                    <select name="status">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="present" <check if="{{ @status == 'present' }}">selected</check>>حاضر</option>
+                        <option value="absent" <check if="{{ @status == 'absent' }}">selected</check>>غایب</option>
+                        <option value="late" <check if="{{ @status == 'late' }}">selected</check>>تأخیر</option>
+                        <option value="excused" <check if="{{ @status == 'excused' }}">selected</check>>استفاده از اجازه</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">اعمال فیلتر</button>
+                    <a href="/attendance" class="btn btn-outline-secondary">پاک کردن</a>
+                </div>
+            </div>
+        </form>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">حاضر</span>
+                <span class="stat-value present">{{ @stats.present }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">غایب</span>
+                <span class="stat-value absent">{{ @stats.absent }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">تأخیر</span>
+                <span class="stat-value late">{{ @stats.late }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">استفاده از اجازه</span>
+                <span class="stat-value excused">{{ @stats.excused }}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">کل</span>
+                <span class="stat-value total">{{ @stats.total }}</span>
+            </div>
+        </div>
+
+        <check if="{{ count(@attendances) }}">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>تاریخ</th>
+                            <th>دانش‌آموز</th>
+                            <th>شماره دانش‌آموزی</th>
+                            <th>کلاس</th>
+                            <th>وضعیت</th>
+                            <th>بازه</th>
+                            <th>توضیحات</th>
+                            <th>ثبت‌کننده</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <repeat group="@attendances" value="@attendance">
+                        <tr>
+                            <td>{{ @attendance.id }}</td>
+                            <td>{{ \App\Helpers\JalaliDate::format(@attendance.attendance_date) }}</td>
+                            <td>{{ @attendance.student_name }}</td>
+                            <td>{{ @attendance.student_id }}</td>
+                            <td>{{ @attendance.class_name }}</td>
+                            <td>
+                                <span class="status-badge status-{{ @attendance.status }}">
+                                    <check if="{{ @attendance.status == 'present' }}">حاضر</check>
+                                    <check if="{{ @attendance.status == 'absent' }}">غایب</check>
+                                    <check if="{{ @attendance.status == 'late' }}">تأخیر</check>
+                                    <check if="{{ @attendance.status == 'excused' }}">استفاده از اجازه</check>
+                                </span>
+                            </td>
+                            <td>{{ @attendance.period ?: '-' }}</td>
+                            <td>{{ @attendance.notes ?: '-' }}</td>
+                            <td>{{ @attendance.recorded_by_name ?: '-' }}</td>
+                            <td>
+                                <a href="/attendance/{{ @attendance.id }}/edit" class="btn btn-sm btn-primary">ویرایش</a>
+                                <a href="/attendance/{{ @attendance.id }}/delete" class="btn btn-sm btn-danger" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                            </td>
+                        </tr>
+                        </repeat>
+                    </tbody>
+                </table>
+            </div>
+        <false>
+            <p class="empty-state">
+                <check if="{{ @classId || @date || @status }}">
+                    هیچ رکوردی با فیلترهای انتخابی یافت نشد.
+                <false>
+                    هیچ رکورد حضور و غیابی ثبت نشده است.
+                </check>
+            </p>
+        </check>
+    </div>
+</div>

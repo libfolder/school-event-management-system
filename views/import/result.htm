@@ -1,0 +1,24 @@
+<div class="card">
+    <div class="card-header">
+        نتیجه وارد کردن
+    </div>
+    <div class="card-body">
+
+        <div class="result-summary">
+            <div class="result-item success">
+                <span class="result-label">دانش‌آموزان جدید:</span>
+                <span class="result-value">{{ @created }}</span>
+            </div>
+            <div class="result-item warning">
+                <span class="result-label">رد شده (تکراری یا ناقص):</span>
+                <span class="result-value">{{ @skipped }}</span>
+            </div>
+        </div>
+
+        <div class="dialog-buttons" style="margin-top:16px;">
+            <a href="/import" class="btn btn-primary">وارد کردن فایل دیگر</a>
+            <a href="/students" class="btn btn-outline-secondary">مشاهده دانش‌آموزان</a>
+        </div>
+
+    </div>
+</div>

@@ -8,9 +8,13 @@ class ActionController extends BaseController
     {
         $models = $this->f3->get('models');
         $actions = $models['Action']->all();
+        foreach ($actions as $index => $action) {
+            $actions[$index]['row_number'] = $index + 1;
+        }
 
         $this->render('actions/index.htm', [
             'title' => 'مدیریت اقدامات',
+            'help' => 'لیست اقدامات ثبت‌شده مانند احضار والدین، معرفی به مشاور، پاداش و ... نمایش داده می‌شود.',
             'actions' => $actions,
         ], 'layout.htm');
     }
@@ -18,14 +22,20 @@ class ActionController extends BaseController
     public function create()
     {
         $models = $this->f3->get('models');
+        $preselectedEventId = (int)($this->f3->get('GET.event_id') ?? 0);
+        $preselectedStudentId = (int)($this->f3->get('GET.student_id') ?? 0);
 
         $this->render('actions/edit.htm', [
             'title' => 'ثبت اقدام جدید',
+            'help' => 'یک دانش‌آموز و رویداد مرتبط را انتخاب کنید. نوع اقدام مشخص کنید و در صورت نیاز نتیجه را ثبت کنید.',
             'action' => 'create',
             'form_action' => '/actions/store',
             'students' => $models['Student']->allWithClass(),
             'events' => $models['Event']->all(),
             'item' => [],
+            'preselected_event_id' => $preselectedEventId,
+            'preselected_student_id' => $preselectedStudentId,
+            'current_jalali_year' => \App\Helpers\JalaliDate::currentYear(),
         ], 'layout.htm');
     }
 
@@ -50,8 +60,7 @@ class ActionController extends BaseController
         $actionModel = $models['Action'];
 
         $eventId = $this->postRaw('event_id');
-        $actionDate = $this->postRaw('action_date');
-        $actionDate = $actionDate !== '' ? \App\Helpers\JalaliDate::parse($actionDate) : null;
+        $actionDate = date('Y-m-d');
 
         $actionModel->create([
             'event_id' => $eventId !== '' ? (int)$eventId : null,
@@ -79,13 +88,17 @@ class ActionController extends BaseController
             return;
         }
 
+        $preselectedStudentId = (int)($this->f3->get('GET.student_id') ?? 0);
+
         $this->render('actions/edit.htm', [
             'title' => 'ویرایش اقدام',
+            'help' => 'وضعیت اقدام را می‌توانید به «تکمیل شده» تغییر دهید و نتیجه را ثبت کنید.',
             'action' => 'edit',
             'form_action' => '/actions/' . $params['id'] . '/update',
             'students' => $models['Student']->allWithClass(),
             'events' => $models['Event']->all(),
             'item' => $action,
+            'preselected_student_id' => $preselectedStudentId,
         ], 'layout.htm');
     }
 
@@ -110,8 +123,7 @@ class ActionController extends BaseController
         $actionModel = $models['Action'];
 
         $eventId = $this->postRaw('event_id');
-        $actionDate = $this->postRaw('action_date');
-        $actionDate = $actionDate !== '' ? \App\Helpers\JalaliDate::parse($actionDate) : null;
+        $actionDate = date('Y-m-d');
 
         $actionModel->update((int)$params['id'], [
             'event_id' => $eventId !== '' ? (int)$eventId : null,
@@ -150,11 +162,6 @@ class ActionController extends BaseController
         $eventId = $this->postRaw('event_id');
         if ($eventId !== '') {
             $this->validateExists('event_id', 'رویداد مرتبط', 'Event', 'find');
-        }
-
-        $actionDate = $this->postRaw('action_date');
-        if ($actionDate !== '') {
-            $this->validateDate('action_date', 'تاریخ اقدام');
         }
 
         if ($isUpdate) {

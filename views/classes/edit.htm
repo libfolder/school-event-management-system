@@ -40,11 +40,11 @@
                     <span class="field-error">{{ @errors.grade }}</span>
                 </check>
             </div>
-            <div class="form-group {{ @errors.section ?? '' ? 'has-error' : '' }}">
-                <label>بخش:</label>
-                <input type="text" name="section" value="{{ @old.section ?? (@class.section ?? '') }}" maxlength="10" required>
-                <check if="{{ @errors.section ?? '' }}">
-                    <span class="field-error">{{ @errors.section }}</span>
+            <div class="form-group {{ @errors.teacher_name ?? '' ? 'has-error' : '' }}">
+                <label>نام معلم:</label>
+                <input type="text" name="teacher_name" value="{{ @old.teacher_name ?? (@class.teacher_name ?? '') }}" maxlength="100">
+                <check if="{{ @errors.teacher_name ?? '' }}">
+                    <span class="field-error">{{ @errors.teacher_name }}</span>
                 </check>
             </div>
         </div>
